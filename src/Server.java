@@ -19,6 +19,8 @@ class PlayerData {
 class Server {
    static PlayerData player[] = new PlayerData[Const.QTY_PLAYERS];
    static Coordinate map[][] = new Coordinate[Const.LIN][Const.COL];
+
+   private DigLibFactoryRI digLibFactoryRI;
    
    Server(int portNumber) {
       ServerSocket ss;
@@ -30,9 +32,13 @@ class Server {
          System.out.print("Abrindo a porta " + portNumber + "...");
          ss = new ServerSocket(portNumber); // socket escuta a porta
          System.out.print(" ok\n");
+         System.out.println("socket " + ss);
+         DBMockup dbMockup = new DBMockup();
+         digLibFactoryRI = new DigLibFactoryimpl(dbMockup);
 
          for (int id = 0; !loggedIsFull(); id = (++id)%Const.QTY_PLAYERS)
             if (!player[id].logged) {
+
                Socket clientSocket = ss.accept();
                new ClientManager(clientSocket, id).start();
             }
