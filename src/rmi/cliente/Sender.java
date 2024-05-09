@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.awt.event.*;
 
 //escuta enquanto a janela (JFrame) estiver em foco

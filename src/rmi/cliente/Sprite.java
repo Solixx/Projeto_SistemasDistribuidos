@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -58,14 +60,16 @@ public class Sprite {
    }
 
    static void loadImages() {
+      String manuelPath[] = {"E:/GitHub/Projeto_SistemasDistribuidos/images/map/basic/", "E:/GitHub/Projeto_SistemasDistribuidos/images/person/"};
+
       try {
          System.out.print("Carregando imagens...");
          for (String keyWord : mapKeyWords)
-            ht.put(keyWord, ImageIO.read(new File("../images/map/basic/"+keyWord+".png")));
+            ht.put(keyWord, ImageIO.read(new File(manuelPath[0]+keyWord+".png")));
 
          for (String color : personColors)
             for (String keyWord : personKeyWords)
-               ht.put(color+"/"+keyWord, ImageIO.read(new File("../images/person/"+color+"/"+keyWord+".png")));
+               ht.put(color+"/"+keyWord, ImageIO.read(new File(manuelPath[1]+color+"/"+keyWord+".png")));
       } catch (IOException e) {
          System.out.print(" erro!\n");
          System.exit(1);

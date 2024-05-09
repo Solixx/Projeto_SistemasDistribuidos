@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.awt.event.KeyEvent;
 
 //thread que dispara as coordenadas seguintes aos clientes enquanto W/A/S/D não é solto

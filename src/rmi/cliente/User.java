@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 class PlayerData {
     boolean logged, alive;
     int x, y; //coordenada atual

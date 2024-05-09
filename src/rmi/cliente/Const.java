@@ -1,4 +1,6 @@
-// acessada pelo servidor e pelo cliente
+package rmi.cliente;
+
+// acessada pelo servidor e pelo rmi.cliente
 interface Const {
    // se não for 4, muitas coisas precisam deixar de ser instanciadas
    final static int QTY_PLAYERS = 4; 

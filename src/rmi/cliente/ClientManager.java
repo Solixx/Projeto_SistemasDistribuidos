@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -5,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//a cada cliente que entra no servidor, uma nova thread é instanciada para tratá-lo
+//a cada rmi.cliente que entra no servidor, uma nova thread é instanciada para tratá-lo
 class ClientManager extends Thread {
    static List<PrintStream> listOutClients = new ArrayList<PrintStream>();
 
@@ -30,8 +32,8 @@ class ClientManager extends Thread {
 
       try {
          System.out.print("Iniciando conexão com o jogador " + this.id + "...");
-         this.in = new Scanner(clientSocket.getInputStream()); // para receber do cliente
-         this.out = new PrintStream(clientSocket.getOutputStream(), true); // para enviar ao cliente
+         this.in = new Scanner(clientSocket.getInputStream()); // para receber do rmi.cliente
+         this.out = new PrintStream(clientSocket.getOutputStream(), true); // para enviar ao rmi.cliente
       } catch (IOException e) {
          System.out.println(" erro: " + e + "\n");
          System.exit(1);
@@ -50,7 +52,7 @@ class ClientManager extends Thread {
    }
 
    public void run() {
-      while (in.hasNextLine()) { // conexão estabelecida com o cliente this.id
+      while (in.hasNextLine()) { // conexão estabelecida com o rmi.cliente this.id
          String str[] = in.nextLine().split(" ");
          
          if (str[0].equals("keyCodePressed") && Server.player[id].alive) {    

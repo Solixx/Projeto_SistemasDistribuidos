@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 //thread que lança mudanças graduais no mapa que ocorrem logo após a bomba ser plantada
 class MapUpdatesThrower extends Thread {
    boolean bombPlanted;
@@ -18,7 +20,7 @@ class MapUpdatesThrower extends Thread {
       this.bombPlanted = true;
    }
 
-   //muda o mapa no servidor e no cliente
+   //muda o mapa no servidor e no rmi.cliente
    static void changeMap(String keyWord, int l, int c) {
       Server.map[l][c].img = keyWord;
       ClientManager.sendToAllClients("-1 mapUpdate " + keyWord + " " + l + " " + c);

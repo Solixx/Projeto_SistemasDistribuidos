@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -25,17 +27,17 @@ public class Client {
          this.socket = new Socket(host, porta);
          out = new PrintStream(socket.getOutputStream(), true);  //para enviar ao servidor
          in = new Scanner(socket.getInputStream()); //para receber do servidor
-      } 
+      }
       catch (UnknownHostException e) {
          System.out.println(" erro: " + e + "\n");
          System.exit(1);
-      } 
+      }
       catch (IOException e) {
          System.out.println(" erro: " + e + "\n");
          System.exit(1);
       }
       System.out.print(" ok\n");
-      
+
       receiveInitialSettings();
       new Receiver().start();
    }
@@ -47,7 +49,7 @@ public class Client {
       for (int i = 0; i < Const.LIN; i++)
          for (int j = 0; j < Const.COL; j++)
             map[i][j] = new Coordinate(Const.SIZE_SPRITE_MAP * j, Const.SIZE_SPRITE_MAP * i, in.next());
-      
+
       //situação (vivo ou morto) inicial de todos os jogadores
       for (int i = 0; i < Const.QTY_PLAYERS; i++)
          Client.alive[i] = in.nextBoolean();
@@ -56,7 +58,7 @@ public class Client {
       for (int i = 0; i < Const.QTY_PLAYERS; i++)
          Client.spawn[i] = new Coordinate(in.nextInt(), in.nextInt());
    }
-   
+
    public static void main(String[] args) {
       new Client("127.0.0.1", 8383);
       new Window();
@@ -69,7 +71,7 @@ class Window extends JFrame {
    Window() {
       Sprite.loadImages();
       Sprite.setMaxLoopStatus();
-      
+
       add(new Game(Const.COL*Const.SIZE_SPRITE_MAP, Const.LIN*Const.SIZE_SPRITE_MAP));
       setTitle("bomberman");
       pack();

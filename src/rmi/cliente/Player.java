@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 import java.awt.Graphics;
 import javax.swing.JPanel;
 
@@ -47,7 +49,7 @@ class StatusChanger extends Thread {
          }
 
          try {
-            Thread.sleep(Const.RATE_PLAYER_STATUS_UPDATE);
+            sleep(Const.RATE_PLAYER_STATUS_UPDATE);
          } catch (InterruptedException e) {}
 
          if (p.status.equals("dead-4")) {

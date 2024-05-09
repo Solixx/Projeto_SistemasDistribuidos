@@ -1,3 +1,5 @@
+package rmi.cliente;
+
 //recebe informações de todos os clientes
 public class Receiver extends Thread {
    Player p;
@@ -17,7 +19,7 @@ public class Receiver extends Thread {
    public void run() {
       String str;
       while (Client.in.hasNextLine()) {
-         this.p = fromWhichPlayerIs(Client.in.nextInt()); //id do cliente
+         this.p = fromWhichPlayerIs(Client.in.nextInt()); //id do rmi.cliente
          str = Client.in.next();
 
          if (str.equals("mapUpdate")) { //p null

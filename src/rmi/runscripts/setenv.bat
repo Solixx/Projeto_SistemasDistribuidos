@@ -7,7 +7,7 @@
 @REM ************************************************************************************
 
 @REM ======================== Use Shell Parameters ========================
-@REM Script usage: setenv <role> (where role should be: server / client)
+@REM Script usage: setenv <role> (where role should be: rmi.server / client)
 @SET SCRIPT_ROLE=%1
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
@@ -38,9 +38,9 @@
 @REM Set SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX=ActivatableImpl
 
 @REM ==== NETWORK STUFF ====
-@REM Must run http server on codebase host:
+@REM Must run http rmi.server on codebase host:
 @REM Python 2: python -m SimpleHTTPServer 8000
-@REM Python 3: python -m http.server 8000
+@REM Python 3: python -m http.rmi.server 8000
 @Set MYLOCALIP=localhost
 @REM MYLOCALIP=192.168.56.1
 @Set REGISTRY_HOST=%MYLOCALIP%
@@ -58,7 +58,7 @@
 @Set JAVAPACKAGE=%PACKAGE_PREFIX%.%PACKAGE%
 @Set JAVAPACKAGEROLE=%PACKAGE_PREFIX%.%PACKAGE%.%SCRIPT_ROLE%
 @Set JAVAPACKAGEPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/%SCRIPT_ROLE%
-@Set JAVASCRIPTSPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/runscripts
+@Set JAVASCRIPTSPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/rmi.runscripts
 @REM Set JAVASECURITYPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/securitypolicies
 @Set JAVASECURITYPATH=edu\\ufp\\inf\\sd\\rmi\\%PACKAGE%\\securitypolicies
 @Set SERVICE_NAME=%SERVICE_PREFIX%Service
@@ -94,7 +94,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @Set ABSPATH2SRC=%JAVAPROJ%\%JAVAPROJ_SRC%
 @Set ABSPATH2DIST=%JAVAPROJ%/%JAVAPROJ_DIST%
 
-@REM #java.rmi.server.codebase property specifies the location from which classes of this server can be downloaded.
+@REM #java.rmi.rmi.server.codebase property specifies the location from which classes of this rmi.server can be downloaded.
 @REM Set SERVER_CODEBASE=http://%SERVER_CODEBASE_HOST%:%SERVER_CODEBASE_PORT%/%JAVAPROJ_CLASSES%
 @REM Set CLIENT_CODEBASE=http://%CLIENT_CODEBASE_HOST%:%CLIENT_CODEBASE_PORT%/%JAVAPROJ_CLASSES%
 @Set SERVER_CODEBASE=http://%SERVER_CODEBASE_HOST%:%SERVER_CODEBASE_PORT%/%JAVAPROJ_JAR_FILE%
