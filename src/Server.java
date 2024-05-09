@@ -2,30 +2,30 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class PlayerData {
-   boolean logged, alive;
-   int x, y; //coordenada atual
-   int numberOfBombs;
-
-   PlayerData(int x, int y) {
-      this.x = x;
-      this.y = y;
-      this.logged = false;
-      this.alive = false;
-      this.numberOfBombs = 1; // para 2 bombas, é preciso tratar cada bomba em uma thread diferente
-   }
-}
+//class PlayerData {
+//   boolean logged, alive;
+//   int x, y; //coordenada atual
+//   int numberOfBombs;
+//
+//   PlayerData(int x, int y) {
+//      this.x = x;
+//      this.y = y;
+//      this.logged = false;
+//      this.alive = false;
+//      this.numberOfBombs = 1; // para 2 bombas, é preciso tratar cada bomba em uma thread diferente
+//   }
+//}
 
 class Server {
    static PlayerData player[] = new PlayerData[Const.QTY_PLAYERS];
    static Coordinate map[][] = new Coordinate[Const.LIN][Const.COL];
-   
+
    Server(int portNumber) {
       ServerSocket ss;
 
       setMap();
       setPlayerData();
-      
+
       try {
          System.out.print("Abrindo a porta " + portNumber + "...");
          ss = new ServerSocket(portNumber); // socket escuta a porta
@@ -49,7 +49,7 @@ class Server {
             return false;
       return true;
    }
-   
+
    void setMap() {
       for (int i = 0; i < Const.LIN; i++)
          for (int j = 0; j < Const.COL; j++)
@@ -89,23 +89,23 @@ class Server {
       map[2][Const.COL - 2].img = "floor-1";
       map[1][Const.COL - 3].img = "floor-1";
    }
-   
+
    void setPlayerData() {
       player[0] = new PlayerData(
-         map[1][1].x - Const.VAR_X_SPRITES, 
+         map[1][1].x - Const.VAR_X_SPRITES,
          map[1][1].y - Const.VAR_Y_SPRITES
       );
 
       player[1] = new PlayerData(
-         map[Const.LIN - 2][Const.COL - 2].x - Const.VAR_X_SPRITES,   
+         map[Const.LIN - 2][Const.COL - 2].x - Const.VAR_X_SPRITES,
          map[Const.LIN - 2][Const.COL - 2].y - Const.VAR_Y_SPRITES
       );
       player[2] = new PlayerData(
-         map[Const.LIN - 2][1].x - Const.VAR_X_SPRITES,   
+         map[Const.LIN - 2][1].x - Const.VAR_X_SPRITES,
          map[Const.LIN - 2][1].y - Const.VAR_Y_SPRITES
       );
       player[3] = new PlayerData(
-         map[1][Const.COL - 2].x - Const.VAR_X_SPRITES,   
+         map[1][Const.COL - 2].x - Const.VAR_X_SPRITES,
          map[1][Const.COL - 2].y - Const.VAR_Y_SPRITES
       );
    }
