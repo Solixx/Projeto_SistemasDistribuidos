@@ -2,21 +2,20 @@
 @REM Description: run Pingclient
 @REM Author: Rui Moreira
 @REM Date: 20/02/2019
-@REM pwd: /Users/rui/Documents/NetBeansProjects/SD/src/edu/ufp/inf/sd/edu.ufp.inf.sd.rmi/helloworld
-@REM http://docs.oracle.com/javase/tutorial/edu.ufp.inf.sd.rmi/running.html
+@REM pwd: /Users/rui/Documents/NetBeansProjects/SD/src/edu/ufp/inf/sd/rmi/helloworld
+@REM http://docs.oracle.com/javase/tutorial/rmi/running.html
 @REM ************************************************************************************
 
 @REM ======================== Use Shell Parameters ========================
-@REM Script usage: setenv <role> (where role should be: server / client)
+@REM Script usage: setenv <role> (where role should be: rmi.server / client)
 @SET SCRIPT_ROLE=%1
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=manue
+@Set USERNAME=pc
 
 @Set WORKDRIVE=C
-@Set JDK=C:/Users/manue/.jdks/corretto-1.8.0_402
-ipts/setenv.bat
+@Set JDK=C:\Users\pc\.jdks\corretto-1.8.0_412
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -25,12 +24,11 @@ ipts/setenv.bat
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=Projeto_SistemasDistribuidos
-@set JAVAPROJ=C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos
-@Set PACKAGE=Proj
-@Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
-@Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
-@Set SERVICE_NAME_ON_REGISTRY=ProjService
-
+@set JAVAPROJ=E:\GitHub\Projeto_SistemasDistribuidos
+@Set PACKAGE=rmi
+@Set PACKAGE_PREFIX=rmi
+@Set PACKAGE_PREFIX_FOLDERS=rmi
+@Set SERVICE_NAME_ON_REGISTRY=JogoService
 @Set CLIENT_CLASS_PREFIX=RMI
 @Set SERVER_CLASS_PREFIX=RMI
 @Set CLIENT_CLASS_POSTFIX=Client
@@ -40,9 +38,9 @@ ipts/setenv.bat
 @REM Set SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX=ActivatableImpl
 
 @REM ==== NETWORK STUFF ====
-@REM Must run http server on codebase host:
+@REM Must run http rmi.server on codebase host:
 @REM Python 2: python -m SimpleHTTPServer 8000
-@REM Python 3: python -m http.server 8000
+@REM Python 3: python -m http.rmi.server 8000
 @Set MYLOCALIP=localhost
 @REM MYLOCALIP=192.168.56.1
 @Set REGISTRY_HOST=%MYLOCALIP%
@@ -60,11 +58,11 @@ ipts/setenv.bat
 @Set JAVAPACKAGE=%PACKAGE_PREFIX%.%PACKAGE%
 @Set JAVAPACKAGEROLE=%PACKAGE_PREFIX%.%PACKAGE%.%SCRIPT_ROLE%
 @Set JAVAPACKAGEPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/%SCRIPT_ROLE%
-@Set JAVASCRIPTSPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/runscripts
+@Set JAVASCRIPTSPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/rmi.runscripts
 @REM Set JAVASECURITYPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/securitypolicies
-@Set JAVASECURITYPATH=edu\\ufp\\inf\\sd\\edu.ufp.inf.sd.rmi\\%PACKAGE%\\securitypolicies
+@Set JAVASECURITYPATH=edu\\ufp\\inf\\sd\\rmi\\%PACKAGE%\\securitypolicies
 @Set SERVICE_NAME=%SERVICE_PREFIX%Service
-@Set SERVICE_URL=edu.ufp.inf.sd.rmi://%REGISTRY_HOST%:%REGISTRY_PORT%/%SERVICE_NAME%
+@Set SERVICE_URL=rmi://%REGISTRY_HOST%:%REGISTRY_PORT%/%SERVICE_NAME%
 
 @Set SERVANT_ACTIVATABLE_IMPL_CLASS=%JAVAPACKAGEROLE%.%SERVER_CLASS_PREFIX%%SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX%
 @Set SERVANT_PERSISTENT_STATE_FILENAME=%SERVICE_PREFIX%Persistent.State
@@ -96,7 +94,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @Set ABSPATH2SRC=%JAVAPROJ%\%JAVAPROJ_SRC%
 @Set ABSPATH2DIST=%JAVAPROJ%/%JAVAPROJ_DIST%
 
-@REM #java.edu.ufp.inf.sd.rmi.server.codebase property specifies the location from which classes of this server can be downloaded.
+@REM #java.rmi.rmi.server.codebase property specifies the location from which classes of this rmi.server can be downloaded.
 @REM Set SERVER_CODEBASE=http://%SERVER_CODEBASE_HOST%:%SERVER_CODEBASE_PORT%/%JAVAPROJ_CLASSES%
 @REM Set CLIENT_CODEBASE=http://%CLIENT_CODEBASE_HOST%:%CLIENT_CODEBASE_PORT%/%JAVAPROJ_CLASSES%
 @Set SERVER_CODEBASE=http://%SERVER_CODEBASE_HOST%:%SERVER_CODEBASE_PORT%/%JAVAPROJ_JAR_FILE%
