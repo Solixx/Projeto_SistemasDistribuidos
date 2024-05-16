@@ -1,9 +1,12 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import java.io.Serializable;
+
 class PlayerData {
     boolean logged, alive;
     int x, y; //coordenada atual
     int numberOfBombs;
+    int userID;
 
     PlayerData(int x, int y) {
         this.x = x;
@@ -12,21 +15,27 @@ class PlayerData {
         this.alive = false;
         this.numberOfBombs = 1; // para 2 bombas, é preciso tratar cada bomba em uma thread diferente
     }
+
+    public void setUserID(int id){
+        this.userID = id;
+    }
 }
 
-public class User {
+public class User implements Serializable {
 
-    static int id = 0;
+    private int id = 0;
     final static int rateStatusUpdate = 115;
 
     static Coordinate spawn[] = new Coordinate[Const.QTY_PLAYERS];
-    static PlayerData player[] = new PlayerData[Const.QTY_PLAYERS];
-    static Coordinate map[][] = new Coordinate[Const.LIN][Const.COL];
+    public PlayerData player[] = new PlayerData[Const.QTY_PLAYERS];
+    public Coordinate map[][] = new Coordinate[Const.LIN][Const.COL];
 
     private String uname;
     private String pword;
+    public Game game;
 
     public User(String uname, String pword) {
+        id++;
         this.uname = uname;
         this.pword = pword;
     }
@@ -66,7 +75,7 @@ public class User {
 
     boolean loggedIsFull() {
         for (int i = 0; i < Const.QTY_PLAYERS; i++)
-            if (player[i].logged == false)
+            if (!player[i].logged)
                 return false;
         return true;
     }
@@ -116,6 +125,7 @@ public class User {
                 map[1][1].x - Const.VAR_X_SPRITES,
                 map[1][1].y - Const.VAR_Y_SPRITES
         );
+        player[0].setUserID(this.getId());
 
         player[1] = new PlayerData(
                 map[Const.LIN - 2][Const.COL - 2].x - Const.VAR_X_SPRITES,
@@ -129,5 +139,9 @@ public class User {
                 map[1][Const.COL - 2].x - Const.VAR_X_SPRITES,
                 map[1][Const.COL - 2].y - Const.VAR_Y_SPRITES
         );
+    }
+
+    public int getId() {
+        return id;
     }
 }

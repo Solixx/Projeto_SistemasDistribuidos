@@ -16,7 +16,6 @@
 
 @Set WORKDRIVE=C
 @Set JDK=C:/Users/manue/.jdks/corretto-1.8.0_402
-ipts/setenv.bat
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -30,12 +29,11 @@ ipts/setenv.bat
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
 @Set SERVICE_NAME_ON_REGISTRY=ProjService
-
 @Set CLIENT_CLASS_PREFIX=RMI
 @Set SERVER_CLASS_PREFIX=RMI
 @Set CLIENT_CLASS_POSTFIX=Client
 @Set SERVER_CLASS_POSTFIX=Server
-@Set SERVANT_IMPL_CLASS_POSTFIX=impl
+@Set SERVANT_IMPL_CLASS_POSTFIX=Impl
 @REM Set SETUP_CLASS_POSTFIX=Setup
 @REM Set SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX=ActivatableImpl
 
@@ -62,7 +60,7 @@ ipts/setenv.bat
 @Set JAVAPACKAGEPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/%SCRIPT_ROLE%
 @Set JAVASCRIPTSPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/runscripts
 @REM Set JAVASECURITYPATH=%PACKAGE_PREFIX_FOLDERS%/%PACKAGE%/securitypolicies
-@Set JAVASECURITYPATH=edu\\ufp\\inf\\sd\\edu.ufp.inf.sd.rmi\\%PACKAGE%\\securitypolicies
+@Set JAVASECURITYPATH=edu\\ufp\\inf\\sd\\rmi\\%PACKAGE%\\securitypolicies
 @Set SERVICE_NAME=%SERVICE_PREFIX%Service
 @Set SERVICE_URL=edu.ufp.inf.sd.rmi://%REGISTRY_HOST%:%REGISTRY_PORT%/%SERVICE_NAME%
 

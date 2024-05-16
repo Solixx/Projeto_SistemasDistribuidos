@@ -9,15 +9,23 @@ public class Player {
    String status, color;
    JPanel panel;
    boolean alive;
+   User user;
 
    StatusChanger sc;
 
-   Player(int id, JPanel panel) throws InterruptedException {
-      this.x = Client.spawn[id].x;
-      this.y = Client.spawn[id].y;
+   Player(JPanel panel, User user) throws InterruptedException {
+      int id = user.getId();
+      this.x = User.spawn[id].x;
+      this.y = User.spawn[id].y;
       this.color = Sprite.personColors[id];
       this.panel = panel;
-      this.alive = Client.alive[id];
+      for (PlayerData pd: user.player) {
+         if(pd.userID == id){
+            this.alive = pd.alive;
+         }
+      }
+
+      this.user = user;
 
       (sc = new StatusChanger(this, "wait")).start();
    }
@@ -54,7 +62,7 @@ class StatusChanger extends Thread {
 
          if (p.status.equals("dead-4")) {
             p.alive = false;
-            if (Game.you == p)
+            if (this.p.user.game.players.contains(this.p))
                System.exit(1);
          }
       }

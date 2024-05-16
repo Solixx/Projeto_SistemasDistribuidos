@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
 import edu.ufp.inf.sd.rmi.Proj.client.User;
+import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
 import java.util.ArrayList;
 
@@ -13,21 +14,21 @@ import java.util.ArrayList;
  */
 public class DBMockup {
 
-    //private final ArrayList<Book> books;// = new ArrayList(); //TODO Mudar para Salas
+    private final ArrayList<Game> games;// = new ArrayList(); //TODO Mudar para Salas
     private final ArrayList<User> users;// = new ArrayList();
 
     /**
      * This constructor creates and inits the database with some books and users.
      */
     public DBMockup() {
-        //books = new ArrayList();
-        users = new ArrayList();
+        games = new ArrayList<>();
+        users = new ArrayList<>();
         //Add 3 books
-        //books.add(new Book("Distributed Systems: principles and paradigms", "Tanenbaum"));
+        //sala.add(new Book("Distributed Systems: principles and paradigms", "Tanenbaum"));
         //books.add(new Book("Distributed Systems: concepts and design", "Colouris"));
         //books.add(new Book("Distributed Computing Networks", "Tanenbaum"));
         //Add one user
-        users.add(new User("guest", "ufp"));
+        //users.add(new User("guest", "ufp"));
     }
 
     /**
@@ -59,40 +60,54 @@ public class DBMockup {
         //return ((u.equalsIgnoreCase("guest") && p.equalsIgnoreCase("ufp")) ? true : false);
     }
 
+    public User findUser(String u, String p){
+        for (User usr : this.users) {
+            if (usr.getUname().compareTo(u) == 0 && usr.getPword().compareTo(p) == 0) {
+                return usr;
+            }
+        }
+        return null;
+    }
+
     /**
-     * Inserts a new book into the DigLib.
-     * TODO Mudar para Salas
-     * @param t title
-     * @param a authors
+     * Inserts a new sala into the DigLib.
      */
-//    public void insert(String t, String a) {
-//        books.add(new Book(t, a));
-//    }
+      public void insertSala(Game sala) {
+          games.add(sala);
+      }
+
+      public ArrayList<Game> listSalas(){
+          for (Game sala : games) {
+              System.out.println("Sala: " + sala.getId() + " MaxPlayers: " + sala.maxPlayers + "CurrentPlayers: " + sala.users.size());
+          }
+
+          return games;
+      }
 
     /**
      * Looks up for books with given title and author keywords.
      * TODO Mudar para Salas
-     * @param t title keyword
-     * @param a author keyword
-     * @return
      */
-//    public Book[] select(String t, String a) {
-//        Book[] abooks = null;
-//        ArrayList<Book> vbooks = new ArrayList();
-//        // Find books that match
-//        for (int i = 0; i < books.size(); i++) {
-//            Book book = (Book) books.get(i);
-//            System.out.println("DB - select(): book[" + i + "] = " + book.getTitle() + ", " + book.getAuthor());
-//            if (book.getTitle().toLowerCase().contains(t.toLowerCase()) && book.getAuthor().toLowerCase().contains(a.toLowerCase())) {
-//                System.out.println("DB - select(): add book[" + i + "] = " + book.getTitle() + ", " + book.getAuthor());
-//                vbooks.add(book);
-//            }
-//        }
-//        // Copy Vector->Array
-//        abooks = new Book[vbooks.size()];
-//        for (int i = 0; i < vbooks.size(); i++) {
-//            abooks[i] = (Book) vbooks.get(i);
-//        }
-//        return abooks;
-//    }
+    public Game select(int id) {
+        Game[] abooks = null;
+        // Find books that match
+        for (int i = 0; i < games.size(); i++) {
+            Game sala = (Game) games.get(i);
+            //System.out.println("DB - select(): book[" + i + "] = " + book.getTitle() + ", " + book.getAuthor());
+            if (sala.getId() == id) {
+                //System.out.println("DB - select(): add book[" + i + "] = " + sala.getTitle() + ", " + sala.getAuthor());
+                return sala;
+            }
+        }
+
+        return null;
+    }
+
+    public ArrayList<Game> getGames() {
+        return games;
+    }
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
 }

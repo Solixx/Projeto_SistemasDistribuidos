@@ -2,3 +2,4 @@
 *.txt
 *.class
 .vscode
+setenv.bat
