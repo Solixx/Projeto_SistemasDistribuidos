@@ -13,13 +13,17 @@ public interface DigLibSessionRI extends Remote {
 
     void logout() throws RemoteException;
 
-    void criarSala(int numPlayer) throws RemoteException;
+    boolean criarSala(int numPlayer) throws RemoteException;
 
-    void joinSala(int id) throws RemoteException;
+    boolean joinSala(int id) throws RemoteException;
 
     ArrayList<Game> listSalas() throws RemoteException;
 
     Game select(int id)  throws RemoteException;
 
-    public User serachUser(String name, String pwd);
+    public User serachUser(String name, String pwd) throws RemoteException;
+
+    User getUser() throws RemoteException;
+
+    void setUser(User user) throws RemoteException;
 }

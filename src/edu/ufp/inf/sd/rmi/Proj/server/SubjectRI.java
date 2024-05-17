@@ -4,6 +4,7 @@ import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface SubjectRI extends Remote {
 
@@ -14,4 +15,6 @@ public interface SubjectRI extends Remote {
     State getState() throws RemoteException;
 
     void setState(State state) throws RemoteException;
+
+    ArrayList<ObserverRI> getObservers() throws RemoteException;
 }

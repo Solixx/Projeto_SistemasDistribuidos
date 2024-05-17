@@ -34,6 +34,30 @@ public class Player {
       if (alive)
          g.drawImage(Sprite.ht.get(color + "/" + status), x, y, Const.WIDTH_SPRITE_PLAYER, Const.HEIGHT_SPRITE_PLAYER, null);
    }
+
+   public User getUser() {
+      return user;
+   }
+
+   public void setUser(User user) {
+      this.user = user;
+   }
+
+   public int getX() {
+      return x;
+   }
+
+   public void setX(int x) {
+      this.x = x;
+   }
+
+   public int getY() {
+      return y;
+   }
+
+   public void setY(int y) {
+      this.y = y;
+   }
 }
 
 class StatusChanger extends Thread {

@@ -20,7 +20,6 @@ public class RMIClient {
      */
     private DigLibFactoryRI digLibFactoryRI;
 
-    static User meuUser;
 
     public static void main(String[] args) {
         if (args != null && args.length < 2) {
@@ -78,11 +77,9 @@ public class RMIClient {
 
             DigLibSessionRI thisSession = null;
 
-            do {
-                thisSession = menuAuth();
+            thisSession = menuAuth();
 
-                System.out.println("Session: " + thisSession);
-            } while(thisSession == null);
+            System.out.println("Session: " + thisSession);
 
             menuSalas(thisSession);
 
@@ -140,16 +137,27 @@ public class RMIClient {
 
                 password = S2password.nextLine();
 
-                DigLibSessionRI hisSession = this.digLibFactoryRI.login(username, password);
-
-                meuUser = hisSession.serachUser(username, password);
-
-                return hisSession;
+                return this.digLibFactoryRI.login(username, password);
             default:
                 System.out.println("Invalid option");
                 System.exit(0);
                 return menuAuth();
         }
+    }
+
+    private void waitingRoom(User user) throws RemoteException {
+        Game game = user.game;
+        System.out.println("À espera de jogadores");
+
+        System.out.println(user.game);
+
+        System.out.println("CurrP: " + game.players.size());
+        System.out.println("CurrP: " + game.maxPlayers);
+        while (game.players.size() < game.maxPlayers){
+
+        }
+
+        new Window(game, game.findObserver(user.getId()));
     }
 
     public void menuSalas(DigLibSessionRI thisSession) throws RemoteException {
@@ -179,8 +187,11 @@ public class RMIClient {
                 if (scanner2.nextInt() == 1) {
                     System.out.println("Insira o numero da sala");
                     Scanner numeroSala = new Scanner(System.in);
-                    thisSession.joinSala(numeroSala.nextInt());
-                    System.out.println("Entrou");
+                    if(thisSession.joinSala(numeroSala.nextInt())){
+                        System.out.println("Entrou");
+                    } else{
+                        System.out.println("Erro ao entrar na sala");
+                    }
                 }
                 menuSalas(thisSession);
             case 2:
@@ -191,7 +202,21 @@ public class RMIClient {
 
                 int numPlayer = scanner3.nextInt();
 
-                thisSession.criarSala(numPlayer);
+                if(thisSession.criarSala(numPlayer)){
+                    System.out.println("Entrou");
+                    waitingRoom(thisSession.getUser());
+                } else{
+                    System.out.println("Erro ao entrar na sala");
+                }
+
+                menuSalas(thisSession);
+            case 3:
+                System.out.println("=Escolher sala=");
+
+                System.out.println("Insira o numero da sala");
+                Scanner numeroSala = new Scanner(System.in);
+                thisSession.joinSala(numeroSala.nextInt());
+                System.out.println("Entrou");
 
                 menuSalas(thisSession);
             default:

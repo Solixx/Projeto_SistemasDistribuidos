@@ -16,14 +16,14 @@ import java.io.Serializable;
  */
 public class State implements Serializable {
     private String msg;
-    private String id;
+    private int id;
 
     /**
      * 
      * @param id
      * @param m 
      */
-    public State(String id, String m) {
+    public State(int id, String m) {
         this.id = id;
         this.msg = m;
     }
@@ -32,7 +32,7 @@ public class State implements Serializable {
      * 
      * @return 
      */
-    public String getId() {
+    public int getId() {
         return id;
     }
 

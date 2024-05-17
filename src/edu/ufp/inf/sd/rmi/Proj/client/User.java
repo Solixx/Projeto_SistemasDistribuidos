@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 class PlayerData {
     boolean logged, alive;
@@ -32,17 +33,14 @@ public class User implements Serializable {
 
     private String uname;
     private String pword;
+
     public Game game;
+    public ObserverRI observer;
 
     public User(String uname, String pword) {
         id++;
         this.uname = uname;
         this.pword = pword;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" + "uname=" + uname + ", pword=" + pword + '}';
     }
 
     /**
@@ -125,7 +123,6 @@ public class User implements Serializable {
                 map[1][1].x - Const.VAR_X_SPRITES,
                 map[1][1].y - Const.VAR_Y_SPRITES
         );
-        player[0].setUserID(this.getId());
 
         player[1] = new PlayerData(
                 map[Const.LIN - 2][Const.COL - 2].x - Const.VAR_X_SPRITES,
@@ -143,5 +140,26 @@ public class User implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public ObserverRI getObserver() {
+        return observer;
+    }
+
+    public void setObserver(ObserverRI observer) {
+        this.observer = observer;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", player=" + Arrays.toString(player) +
+                ", map=" + Arrays.toString(map) +
+                ", uname='" + uname + '\'' +
+                ", pword='" + pword + '\'' +
+                ", game=" + game +
+                ", observer=" + observer +
+                '}';
     }
 }

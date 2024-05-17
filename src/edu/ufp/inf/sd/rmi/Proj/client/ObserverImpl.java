@@ -8,22 +8,23 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI {
 
-    private String id;
+    private final int id;
     private State lastObserverState;
     protected SubjectRI subjectRI;
     protected User user;
 
-    protected ObserverImpl(String id, User f, SubjectRI subjectTI) throws RemoteException {
+    public ObserverImpl(User f, SubjectRI subjectTI) throws RemoteException {
         super();
-        this.id = id;
+        this.id = f.getId();
         this.user = f;
         this.subjectRI = subjectTI;
         this.subjectRI.attach(this);
+        this.user.setObserver(this);
     }
 
-    protected ObserverImpl(String id, User f, String arg[]) throws RemoteException {
+    public ObserverImpl(User f, String arg[]) throws RemoteException {
         super();
-        this.id = id;
+        this.id = f.getId();
         this.user = f;
     }
 
@@ -37,35 +38,40 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI {
         }
     }
 
-    public String getId() {
+    @Override
+    public int getId() throws RemoteException {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public State getLastObserverState() {
+    @Override
+    public State getLastObserverState() throws RemoteException {
         return lastObserverState;
     }
 
-    public void setLastObserverState(State lastObserverState) {
+    @Override
+    public void setLastObserverState(State lastObserverState) throws RemoteException {
         this.lastObserverState = lastObserverState;
     }
 
-    public SubjectRI getSubjectRI() {
+    @Override
+    public SubjectRI getSubjectRI() throws RemoteException {
         return subjectRI;
     }
 
-    public void setSubjectRI(SubjectRI subjectRI) {
+    @Override
+    public void setSubjectRI(SubjectRI subjectRI) throws RemoteException {
         this.subjectRI = subjectRI;
     }
 
-    public User getUser() {
+    @Override
+    public User getUser() throws RemoteException {
         return user;
     }
 
-    public void setUser(User user) {
+    @Override
+    public void setUser(User user) throws RemoteException {
         this.user = user;
     }
+
+
 }

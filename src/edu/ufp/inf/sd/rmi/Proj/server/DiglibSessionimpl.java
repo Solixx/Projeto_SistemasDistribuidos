@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
+import edu.ufp.inf.sd.rmi.Proj.client.ObserverImpl;
+import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.Proj.client.User;
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
@@ -29,16 +31,35 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     }
 
     @Override
-    public void criarSala(int numPlayer) throws RemoteException {
+    public boolean criarSala(int numPlayer) throws RemoteException {
+        SubjectRI subject = new SubjectImpl();
+        ObserverRI observer = new ObserverImpl(this.user, subject);
+
         System.out.println("numP: "+numPlayer);
         System.out.println("numP: "+this.user);
-        this.digLibFactoryimpl.getDbMockup().insertSala(new Game(numPlayer, this.user));
+        if(user.game == null){
+            Game game = new Game(numPlayer, this.user, subject);
+            this.user.game = game;
+            this.digLibFactoryimpl.getDbMockup().insertSala(game);
+            return true;
+        } else{
+            return false;
+        }
     }
 
     @Override
-    public void joinSala(int id) throws RemoteException {
+    public boolean joinSala(int id) throws RemoteException {
         Game sala = this.digLibFactoryimpl.getDbMockup().select(id);
-        if(sala.users.size() < sala.maxPlayers)    sala.addUser(user);
+
+        if(user.game == null){
+            if(sala.users.size() < sala.maxPlayers){
+                sala.addUser(user);
+                new ObserverImpl(this.user, sala.subjectRI);
+            }
+            return true;
+        } else{
+            return false;
+        }
     }
 
     @Override
@@ -51,16 +72,17 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
         return this.digLibFactoryimpl.getDbMockup().select(id);
     }
 
+    @Override
+    public User serachUser(String name, String pwd) throws RemoteException {
+        return this.getDigLibFactoryimpl().getDbMockup().findUser(name, pwd);
+    }
+
     public DigLibFactoryimpl getDigLibFactoryimpl() {
         return digLibFactoryimpl;
     }
 
-    public void setDigLibFactoryimpl(DigLibFactoryimpl digLibFactoryimpl) {
+    public void setDigLibFactoryimpl(DigLibFactoryimpl digLibFactoryimpl) throws RemoteException {
         this.digLibFactoryimpl = digLibFactoryimpl;
-    }
-
-    public User serachUser(String name, String pwd){
-        return this.getDigLibFactoryimpl().getDbMockup().findUser(name, pwd);
     }
 
     public User getUser() {

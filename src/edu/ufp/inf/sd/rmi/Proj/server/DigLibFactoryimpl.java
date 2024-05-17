@@ -45,7 +45,7 @@ public class DigLibFactoryimpl extends UnicastRemoteObject implements DigLibFact
             //if (this.sessionRIHashMap.containsKey(user)){
             if (this.containsUser(user, pwd) != null){
                 System.out.println("log if");
-                return this.sessionRIHashMap.get(user);
+                return this.sessionRIHashMap.get(this.containsUser(user, pwd));
             }else{
                 System.out.println("log out");
                 User u = this.dbMockup.findUser(user, pwd);

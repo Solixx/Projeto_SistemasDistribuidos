@@ -41,6 +41,11 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
         notifyAllObservers();
     }
 
+    @Override
+    public ArrayList<ObserverRI> getObservers() throws RemoteException {
+        return this.observers;
+    }
+
     public void notifyAllObservers() throws RemoteException {
         for (ObserverRI obs: this.observers) {
             obs.update();
