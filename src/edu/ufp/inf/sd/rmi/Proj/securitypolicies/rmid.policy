@@ -1,0 +1,7 @@
+grant {
+    // allow activation groups to use certain system properties
+    permission com.sun.edu.ufp.inf.sd.rmi.rmid.ExecOptionPermission "-Djava.security.policy=${edu.ufp.sd.Proj.activation.policy}";
+    permission com.sun.edu.ufp.inf.sd.rmi.rmid.ExecOptionPermission "-Djava.class.path=no_classpath";
+    permission com.sun.edu.ufp.inf.sd.rmi.rmid.ExecOptionPermission "-Dedu.ufp.sd.Proj.activation.impl.codebase=*";
+    permission com.sun.edu.ufp.inf.sd.rmi.rmid.ExecOptionPermission "-Dedu.ufp.sd.Proj.activation.file=*";
+};
