@@ -3,10 +3,11 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
-public class Sprite {
+public class Sprite implements Serializable {
    final static String personColors[] = {
       "white", 
       "black", 
@@ -60,7 +61,7 @@ public class Sprite {
    }
 
    static void loadImages() {
-      String manuelPath[] = {"E:/GitHub/Projeto_SistemasDistribuidos/images/map/basic/", "E:/GitHub/Projeto_SistemasDistribuidos/images/person/"};
+      String manuelPath[] = {"C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/map/basic/", "C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/person/"};
 
       try {
          System.out.print("Carregando imagens...");

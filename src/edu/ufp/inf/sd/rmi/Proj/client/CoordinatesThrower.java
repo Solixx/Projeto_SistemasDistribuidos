@@ -1,9 +1,10 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 
 //thread que dispara as coordenadas seguintes aos clientes enquanto W/A/S/D não é solto
-class CoordinatesThrower extends Thread {
+class CoordinatesThrower extends Thread implements Serializable {
    boolean up, right, left, down;
    int id;
 

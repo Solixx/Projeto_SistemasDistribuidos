@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import java.io.Serializable;
+
 //recebe informações de todos os clientes
-public class Receiver extends Thread {
+public class Receiver extends Thread implements Serializable {
    Player p;
    Game game;
    

@@ -1,10 +1,11 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import javax.swing.JPanel;
 
 //tanto para you quanto para enemy
-public class Player {
+public class Player implements Serializable {
    int x, y;
    String status, color;
    JPanel panel;
@@ -13,13 +14,13 @@ public class Player {
 
    StatusChanger sc;
 
-   Player(JPanel panel, User user) throws InterruptedException {
+   Player(JPanel panel, User user, Game game) throws InterruptedException {
       int id = user.getId();
-      this.x = User.spawn[id].x;
-      this.y = User.spawn[id].y;
+      this.x = user.getSpawn()[id].x;
+      this.y = user.getSpawn()[id].y;
       this.color = Sprite.personColors[id];
       this.panel = panel;
-      for (PlayerData pd: user.player) {
+      for (PlayerData pd: game.playerData) {
          if(pd.userID == id){
             this.alive = pd.alive;
          }
@@ -60,7 +61,7 @@ public class Player {
    }
 }
 
-class StatusChanger extends Thread {
+class StatusChanger extends Thread implements Serializable {
    Player p;
    String status;
    int index;

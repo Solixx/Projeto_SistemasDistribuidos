@@ -2,13 +2,14 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 //a cada edu.ufp.inf.sd.rmi.Proj.cliente que entra no servidor, uma nova thread é instanciada para tratá-lo
-class ClientManager extends Thread {
+class ClientManager extends Thread implements Serializable {
    static List<PrintStream> listOutClients = new ArrayList<PrintStream>();
 
    static void sendToAllClients(String outputLine) {

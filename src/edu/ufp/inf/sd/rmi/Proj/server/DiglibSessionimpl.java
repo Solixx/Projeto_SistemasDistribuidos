@@ -33,10 +33,8 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     @Override
     public boolean criarSala(int numPlayer) throws RemoteException {
         SubjectRI subject = new SubjectImpl();
-        ObserverRI observer = new ObserverImpl(this.user, subject);
+        new ObserverImpl(this.user, subject);
 
-        System.out.println("numP: "+numPlayer);
-        System.out.println("numP: "+this.user);
         if(user.game == null){
             Game game = new Game(numPlayer, this.user, subject);
             this.user.game = game;

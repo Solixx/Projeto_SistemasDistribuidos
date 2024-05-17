@@ -6,7 +6,7 @@ import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI {
+public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI  {
 
     private final int id;
     private State lastObserverState;

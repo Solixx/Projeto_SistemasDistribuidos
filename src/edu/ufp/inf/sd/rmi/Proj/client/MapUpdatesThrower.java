@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import java.io.Serializable;
+
 //thread que lança mudanças graduais no mapa que ocorrem logo após a bomba ser plantada
-class MapUpdatesThrower extends Thread {
+class MapUpdatesThrower extends Thread implements Serializable {
    boolean bombPlanted;
    int id, l, c;
 
@@ -108,7 +110,7 @@ class MapUpdatesThrower extends Thread {
 }
 
 //thread auxiliar
-class Thrower extends Thread {
+class Thrower extends Thread implements Serializable {
    String keyWord, index[];
    int l, c;
    int delay;

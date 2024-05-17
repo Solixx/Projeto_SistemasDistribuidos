@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import java.io.Serializable;
+
 // acessada pelo servidor e pelo edu.ufp.inf.sd.rmi.Proj.cliente
 interface Const {
    // se não for 4, muitas coisas precisam deixar de ser instanciadas
@@ -34,7 +36,7 @@ interface Const {
    };
 }
 
-class Coordinate {
+class Coordinate implements Serializable {
    public int x, y;
    String img;
 

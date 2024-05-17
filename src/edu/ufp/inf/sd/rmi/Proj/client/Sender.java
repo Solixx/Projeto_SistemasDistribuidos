@@ -3,10 +3,11 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 import edu.ufp.inf.sd.rmi.Proj.server.State;
 
 import java.awt.event.*;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
 //escuta enquanto a janela (JFrame) estiver em foco
-public class Sender extends KeyAdapter {
+public class Sender extends KeyAdapter implements Serializable {
    int lastKeyCodePressed;
    public ObserverRI observer;
 

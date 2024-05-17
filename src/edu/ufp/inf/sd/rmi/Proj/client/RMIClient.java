@@ -145,22 +145,22 @@ public class RMIClient {
         }
     }
 
-    private void waitingRoom(User user) throws RemoteException {
+    private void waitingRoom(User user) throws RemoteException, InterruptedException {
         Game game = user.game;
         System.out.println("À espera de jogadores");
 
         System.out.println(user.game);
 
-        System.out.println("CurrP: " + game.players.size());
+        System.out.println("CurrP: " + game.users.size());
         System.out.println("CurrP: " + game.maxPlayers);
-        while (game.players.size() < game.maxPlayers){
+        while (game.users.size() < game.maxPlayers){ //TODO depois alterar para game.loggedIsFull()
 
         }
 
         new Window(game, game.findObserver(user.getId()));
     }
 
-    public void menuSalas(DigLibSessionRI thisSession) throws RemoteException {
+    public void menuSalas(DigLibSessionRI thisSession) throws RemoteException, InterruptedException {
         System.out.println("Menu:");
         System.out.println("1 - Ver Salas");
         System.out.println("2 - Criar Sala");
@@ -189,6 +189,7 @@ public class RMIClient {
                     Scanner numeroSala = new Scanner(System.in);
                     if(thisSession.joinSala(numeroSala.nextInt())){
                         System.out.println("Entrou");
+                        waitingRoom(thisSession.getUser());
                     } else{
                         System.out.println("Erro ao entrar na sala");
                     }
@@ -217,6 +218,7 @@ public class RMIClient {
                 Scanner numeroSala = new Scanner(System.in);
                 thisSession.joinSala(numeroSala.nextInt());
                 System.out.println("Entrou");
+                waitingRoom(thisSession.getUser());
 
                 menuSalas(thisSession);
             default:

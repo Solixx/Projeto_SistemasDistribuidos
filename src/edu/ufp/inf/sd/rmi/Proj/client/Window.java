@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -9,14 +10,15 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-class Window extends JFrame {
+class Window extends JFrame implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    Window(Game game, ObserverRI observer) {
+    Window(Game game, ObserverRI observer) throws InterruptedException {
         Sprite.loadImages();
         Sprite.setMaxLoopStatus();
 
         add(game);
+        game.startGame();
         setTitle("bomberman");
         pack();
         setVisible(true);
