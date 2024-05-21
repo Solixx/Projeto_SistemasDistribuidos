@@ -24,7 +24,8 @@ import java.util.Arrays;
 
 public class User implements Serializable {
 
-    private int id = 0;
+    static int currID = 1;
+    private int id;
     final static int rateStatusUpdate = 115;
 
     private Coordinate spawn[] = new Coordinate[Const.QTY_PLAYERS];
@@ -40,7 +41,7 @@ public class User implements Serializable {
     public ObserverRI observer;
 
     public User(String uname, String pword) {
-        id++;
+        this.id = currID++;
         this.uname = uname;
         this.pword = pword;
     }

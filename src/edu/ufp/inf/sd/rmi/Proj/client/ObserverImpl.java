@@ -29,13 +29,57 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI  {
     }
 
     @Override
-    public void update() throws RemoteException {
+    public void update() throws RemoteException, InterruptedException {
         setLastObserverState(this.subjectRI.getState());
         for (Player p: user.game.players) {
+            System.out.println("Id: " + user.getId() + "players: " + p);
             if(p.user.getId() == user.getId()){
                 p.panel.repaint();
             }
         }
+
+        String[] str;
+
+        str = lastObserverState.getMsg().split(" ");
+
+        if(str[0].isEmpty())    return;
+
+        if(str[0].equals("StartGame")){
+            user.game.gameStarted = true;
+            new Window(user.game, user.game.findObserver(user.getId()));
+            return;
+        }
+
+        System.out.println("lastState: " + lastObserverState.getMsg() + "userID: " + user.getId());
+
+        Player p = user.game.findPlayer(Integer.parseInt(str[0]));
+
+
+        if (str[1].equals("mapUpdate")) { //p null
+            user.game.setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
+            //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
+            user.game.findPlayer(user.getId()).panel.repaint();
+            //game.you.panel.repaint();
+        }
+        else if (str[1].equals("newCoordinate")) {
+            p.x = Integer.parseInt(str[2]);
+            p.y = Integer.parseInt(str[3]);
+            user.game.findPlayer(user.getId()).panel.repaint();
+            //game.you.panel.repaint();
+        }
+        else if (str[1].equals("newStatus")) {
+            p.sc.setLoopStatus(str[2]);
+        }
+        else if (str[1].equals("stopStatusUpdate")) {
+            p.sc.stopLoopStatus();
+        }
+        else if (str[1].equals("playerJoined")) {
+            p.alive = true;
+        }
+    }
+
+    public Player findPlayer(int id) throws RemoteException{
+        return user.game.findPlayer(id);
     }
 
     @Override

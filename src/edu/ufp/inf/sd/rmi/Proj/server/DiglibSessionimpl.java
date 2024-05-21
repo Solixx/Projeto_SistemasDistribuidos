@@ -46,13 +46,13 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     }
 
     @Override
-    public boolean joinSala(int id) throws RemoteException {
+    public boolean joinSala(int id) throws RemoteException, InterruptedException {
         Game sala = this.digLibFactoryimpl.getDbMockup().select(id);
 
         if(user.game == null){
             if(sala.users.size() < sala.maxPlayers){
-                sala.addUser(user);
                 new ObserverImpl(this.user, sala.subjectRI);
+                sala.addUser(user);
             }
             return true;
         } else{

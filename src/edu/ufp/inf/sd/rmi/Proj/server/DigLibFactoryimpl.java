@@ -31,30 +31,30 @@ public class DigLibFactoryimpl extends UnicastRemoteObject implements DigLibFact
     public boolean register(String usernamne, String pwd) {
         if(usernamne != null && pwd != null && !this.dbMockup.exists(usernamne,pwd)){
             dbMockup.register(usernamne,pwd);
-            System.out.println("regiuster feito");
+            //System.out.println("regiuster feito");
             return true;
         }
-        System.out.println("regiuster nao feito");
+        //System.out.println("regiuster nao feito");
         return false;
     }
 
     @Override
     public DigLibSessionRI login(String user, String pwd) throws RemoteException {
         if(this.dbMockup.exists(user,pwd)){
-            System.out.println("login feito");
+            //System.out.println("login feito");
             //if (this.sessionRIHashMap.containsKey(user)){
             if (this.containsUser(user, pwd) != null){
-                System.out.println("log if");
+                //System.out.println("log if");
                 return this.sessionRIHashMap.get(this.containsUser(user, pwd));
             }else{
-                System.out.println("log out");
+                //System.out.println("log out");
                 User u = this.dbMockup.findUser(user, pwd);
                 DigLibSessionRI digLibSessionRI = new DiglibSessionimpl(this,u);
                 this.sessionRIHashMap.put(u, digLibSessionRI);
                 return digLibSessionRI;
             }
         }else {
-            System.out.println("egister feito");
+            //System.out.println("egister feito");
             this.register(user,pwd);
             User u = this.dbMockup.findUser(user, pwd);
             DigLibSessionRI digLibSessionRI = new DiglibSessionimpl(this,u);

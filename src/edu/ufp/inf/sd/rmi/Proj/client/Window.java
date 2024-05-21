@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
@@ -13,12 +14,13 @@ import javax.swing.WindowConstants;
 class Window extends JFrame implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    Window(Game game, ObserverRI observer) throws InterruptedException {
+    Window(Game game, ObserverRI observer) throws InterruptedException, RemoteException {
         Sprite.loadImages();
         Sprite.setMaxLoopStatus();
 
         add(game);
         game.startGame();
+
         setTitle("bomberman");
         pack();
         setVisible(true);

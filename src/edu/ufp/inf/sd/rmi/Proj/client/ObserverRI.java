@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 
 public interface ObserverRI extends Remote {
 
-    void update() throws RemoteException;
+    void update() throws RemoteException, InterruptedException;
 
     public int getId() throws RemoteException;
 
@@ -23,4 +23,6 @@ public interface ObserverRI extends Remote {
     public User getUser() throws RemoteException;
 
     public void setUser(User user) throws RemoteException;
+
+    public Player findPlayer(int id)  throws RemoteException;
 }

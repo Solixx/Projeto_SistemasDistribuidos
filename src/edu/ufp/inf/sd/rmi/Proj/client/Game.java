@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import edu.ufp.inf.sd.rmi.Proj.server.State;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectImpl;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 
@@ -42,9 +43,11 @@ public class Game extends JPanel implements Serializable {
 
    public PlayerData[] playerData = new PlayerData[Const.QTY_PLAYERS];
    public Coordinate[][] map = new Coordinate[Const.LIN][Const.COL];
+   public boolean gameStarted;
 
    public Game(int maxPlayers, User user, SubjectRI subject) {
       this.id = currId++;
+      this.gameStarted = false;
 
       setPreferredSize(new Dimension(Const.COL*Const.SIZE_SPRITE_MAP, Const.LIN*Const.SIZE_SPRITE_MAP));
       try {
@@ -59,7 +62,6 @@ public class Game extends JPanel implements Serializable {
          this.subjectRI = subject;
 
          this.addUser(user);
-
 
 //         you = new Player(Client.id, this);
 //         enemy1 = new Player((Client.id+1)%Const.QTY_PLAYERS, this);
@@ -78,11 +80,10 @@ public class Game extends JPanel implements Serializable {
       System.out.println("Meu jogador: " + Sprite.personColors[user.getId()]);
    }
 
-   public void startGame() throws InterruptedException {
+   public void startGame() throws InterruptedException, RemoteException {
       for(int i = 0; i < users.size(); i++){
          User user = users.get(i);
-         players.add(new Player(this, user, this));
-         playerData[i].setUserID(user.getId());
+         //players.add(new Player(this, user, this));
       }
    }
 
@@ -110,13 +111,21 @@ public class Game extends JPanel implements Serializable {
       }
    }
 
-   static void setSpriteMap(String keyWord, int l, int c, User u) {
+   public void setSpriteMap(String keyWord, int l, int c, User u) {
       u.map[l][c].img = keyWord;
    }
 
-   public void addUser(User user){
+   public void addUser(User user) throws RemoteException, InterruptedException {
       this.users.add(user);
       user.joinGame(this);
+      players.add(new Player(this, user, this));
+      for(int i = 0; i < maxPlayers; i++){
+         if (!playerData[i].logged) {
+            playerData[i].setUserID(user.getId());
+            new ClientManager(user.getObserver(), user.getId(), this).start();
+            break;
+         }
+      }
    }
 
    public int getMaxPlayers() {
@@ -148,6 +157,15 @@ public class Game extends JPanel implements Serializable {
       return null;
    }
 
+   public PlayerData findPlayerData(int id){
+      for (PlayerData player: this.playerData) {
+         if(player.userID == id){
+            return player;
+         }
+      }
+      return null;
+   }
+
    public ObserverRI findObserver(int id) throws RemoteException {
       for (ObserverRI observer: this.subjectRI.getObservers()) {
          if(observer.getUser().getId() == id){
@@ -157,10 +175,16 @@ public class Game extends JPanel implements Serializable {
       return null;
    }
 
-   boolean loggedIsFull() {
-      for (int i = 0; i < maxPlayers; i++)
+   public boolean loggedIsFull() throws RemoteException, InterruptedException {
+      for (int i = 0; i < maxPlayers; i++){
          if (!playerData[i].logged)
             return false;
+      }
+
+      if(!this.gameStarted)
+      {
+         this.subjectRI.setState(new State("StartGame"));
+      }
       return true;
    }
 

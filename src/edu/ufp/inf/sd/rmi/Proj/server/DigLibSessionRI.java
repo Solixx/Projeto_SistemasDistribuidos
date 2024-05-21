@@ -15,7 +15,7 @@ public interface DigLibSessionRI extends Remote {
 
     boolean criarSala(int numPlayer) throws RemoteException;
 
-    boolean joinSala(int id) throws RemoteException;
+    boolean joinSala(int id) throws RemoteException, InterruptedException;
 
     ArrayList<Game> listSalas() throws RemoteException;
 

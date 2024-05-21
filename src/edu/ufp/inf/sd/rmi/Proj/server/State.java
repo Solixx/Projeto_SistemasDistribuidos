@@ -28,6 +28,10 @@ public class State implements Serializable {
         this.msg = m;
     }
 
+    public State(String m) {
+        this.msg = m;
+    }
+
     /**
      * 
      * @return 
@@ -50,5 +54,17 @@ public class State implements Serializable {
      */
     public void setInfo(String m){
         this.msg = m;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

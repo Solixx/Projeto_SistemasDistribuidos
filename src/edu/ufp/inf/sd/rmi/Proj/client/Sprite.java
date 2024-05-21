@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
-public class Sprite implements Serializable {
+public class Sprite {
    final static String personColors[] = {
       "white", 
       "black", 

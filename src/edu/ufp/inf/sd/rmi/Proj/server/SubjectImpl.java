@@ -36,7 +36,7 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
     }
 
     @Override
-    public void setState(State state) throws RemoteException {
+    public void setState(State state) throws RemoteException, InterruptedException {
         this.subjectState = state;
         notifyAllObservers();
     }
@@ -46,7 +46,7 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
         return this.observers;
     }
 
-    public void notifyAllObservers() throws RemoteException {
+    public void notifyAllObservers() throws RemoteException, InterruptedException {
         for (ObserverRI obs: this.observers) {
             obs.update();
         }

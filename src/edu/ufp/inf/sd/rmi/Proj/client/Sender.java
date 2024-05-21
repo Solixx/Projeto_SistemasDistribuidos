@@ -19,14 +19,14 @@ public class Sender extends KeyAdapter implements Serializable {
 
             observer.getSubjectRI().setState(new State(observer.getId(), "pressedSpace " + x + " " + y));
 
-         } catch (RemoteException ex) {
+         } catch (RemoteException | InterruptedException ex) {
             throw new RuntimeException(ex);
          }
       }
       else if (isNewKeyCode(e.getKeyCode())) {
          try {
             observer.getSubjectRI().setState(new State(observer.getId(), "keyCodePressed " + e.getKeyCode()));
-         } catch (RemoteException ex) {
+         } catch (RemoteException | InterruptedException ex) {
             throw new RuntimeException(ex);
          }
       }
@@ -35,7 +35,7 @@ public class Sender extends KeyAdapter implements Serializable {
    public void keyReleased(KeyEvent e) {
       try {
          observer.getSubjectRI().setState(new State(observer.getId(), "keyCodeReleased " + e.getKeyCode()));
-      } catch (RemoteException ex) {
+      } catch (RemoteException | InterruptedException ex) {
          throw new RuntimeException(ex);
       }
       lastKeyCodePressed = -1; //a próxima tecla sempre será nova

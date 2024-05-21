@@ -14,7 +14,7 @@ public interface SubjectRI extends Remote {
 
     State getState() throws RemoteException;
 
-    void setState(State state) throws RemoteException;
+    void setState(State state) throws RemoteException, InterruptedException;
 
     ArrayList<ObserverRI> getObservers() throws RemoteException;
 }

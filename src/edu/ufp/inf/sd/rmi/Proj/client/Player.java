@@ -26,6 +26,8 @@ public class Player implements Serializable {
          }
       }
 
+      Sprite.setMaxLoopStatus();
+
       this.user = user;
 
       (sc = new StatusChanger(this, "wait")).start();

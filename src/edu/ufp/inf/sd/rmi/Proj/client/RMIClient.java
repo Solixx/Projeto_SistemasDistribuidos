@@ -79,7 +79,8 @@ public class RMIClient {
 
             thisSession = menuAuth();
 
-            System.out.println("Session: " + thisSession);
+
+            //System.out.println("Session: " + thisSession);
 
             menuSalas(thisSession);
 
@@ -149,15 +150,7 @@ public class RMIClient {
         Game game = user.game;
         System.out.println("À espera de jogadores");
 
-        System.out.println(user.game);
-
-        System.out.println("CurrP: " + game.users.size());
-        System.out.println("CurrP: " + game.maxPlayers);
-        while (game.users.size() < game.maxPlayers){ //TODO depois alterar para game.loggedIsFull()
-
-        }
-
-        new Window(game, game.findObserver(user.getId()));
+        //new Receiver(game, user.getObserver(), user).start();
     }
 
     public void menuSalas(DigLibSessionRI thisSession) throws RemoteException, InterruptedException {

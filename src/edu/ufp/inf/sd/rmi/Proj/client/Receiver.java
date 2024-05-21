@@ -1,53 +1,98 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import javax.sound.midi.Soundbank;
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Objects;
 
 //recebe informações de todos os clientes
 public class Receiver extends Thread implements Serializable {
-   Player p;
-   Game game;
-   
-//   Player fromWhichPlayerIs(int id) {
-//      if (id == Client.id)
-//         return game.you;
-//      else if (id == (Client.id+1)%Const.QTY_PLAYERS)
-//         return game.enemy1;
-//      else if (id == (Client.id+2)%Const.QTY_PLAYERS)
-//         return game.enemy2;
-//      else if (id == (Client.id+3)%Const.QTY_PLAYERS)
-//         return game.enemy3;
-//      return null;
-//   }
-//
-//   public void run() {
-//      String str;
-//      while (Client.in.hasNextLine()) {
-//         this.p = fromWhichPlayerIs(Client.in.nextInt()); //id do edu.ufp.inf.sd.rmi.Proj.cliente
-//         str = Client.in.next();
-//
-//         if (str.equals("mapUpdate")) { //p null
-//            Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt());
-//            game.you.panel.repaint();
-//         }
-//         else if (str.equals("newCoordinate")) {
-//            p.x = Client.in.nextInt();
-//            p.y = Client.in.nextInt();
-//            game.you.panel.repaint();
-//         }
-//         else if (str.equals("newStatus")) {
-//            p.sc.setLoopStatus(Client.in.next());
-//         }
-//         else if (str.equals("stopStatusUpdate")) {
-//            p.sc.stopLoopStatus();
-//         }
-//         else if (str.equals("playerJoined")) {
-//            p.alive = true;
-//         }
-//      }
-//      Client.in.close();
-//   }
+   public Player p;
+   public Game game;
+   public ObserverRI observer;
+   public User user;
 
-   public Receiver(Game ganme){
+   Player fromWhichPlayerIs(int id) throws RemoteException {
+      return observer.findPlayer(id);
+   }
+
+   public void run() {
+      String[] str = new String[0];
+      while (true) {
+         try {
+            if (observer.getLastObserverState().getMsg() == null || Objects.equals(observer.getLastObserverState().getMsg(), "")) break;
+
+            //System.out.println("rec obser: " + observer.getId());
+            //System.out.println("rec obser: " + observer.getLastObserverState().getMsg());
+
+            str = observer.getLastObserverState().getMsg().split(" ");
+
+            if(str[0].isEmpty()){
+               continue;
+            }
+
+            if(str[0].equals("StartGame") && !game.gameStarted){
+               new Window(user.game, user.game.findObserver(user.getId()));
+               continue;
+            }
+
+            System.out.println("str[0]: " + str[0]);
+
+            this.p = fromWhichPlayerIs(Integer.parseInt(str[0]));
+
+
+            if (str[1].equals("mapUpdate")) { //p null
+               game.setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
+               //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
+               game.findPlayer(user.getId()).panel.repaint();
+               //game.you.panel.repaint();
+            }
+            else if (str[1].equals("newCoordinate")) {
+               p.x = Integer.parseInt(str[2]);
+               p.y = Integer.parseInt(str[3]);
+               game.findPlayer(user.getId()).panel.repaint();
+               //game.you.panel.repaint();
+            }
+            else if (str[1].equals("newStatus")) {
+               p.sc.setLoopStatus(str[2]);
+            }
+            else if (str[1].equals("stopStatusUpdate")) {
+               p.sc.stopLoopStatus();
+            }
+            else if (str[1].equals("playerJoined")) {
+               p.alive = true;
+            }
+
+         } catch (Exception e) {
+
+               System.out.println("rec obser: " + game.players);
+
+            throw new RuntimeException(e);
+         }
+      }
+       try {
+           user.getObserver().getSubjectRI().detach(observer);
+       } catch (RemoteException e) {
+           throw new RuntimeException(e);
+       }
+       //Client.in.close();
+   }
+
+   public Receiver(Game game, ObserverRI observer, User user){
       this.game = game;
+      this.observer = observer;
+      this.user = user;
+   }
+
+   public static boolean isNumeric(String str) {
+      if (str == null || str.isEmpty()) {
+         return false;
+      }
+      try {
+         Integer.parseInt(str);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
+      }
    }
 }
