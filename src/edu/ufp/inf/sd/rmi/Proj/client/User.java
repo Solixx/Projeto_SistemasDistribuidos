@@ -37,7 +37,7 @@ public class User implements Serializable {
     private String uname;
     private String pword;
 
-    public Game game;
+    private Game game;
     public ObserverRI observer;
 
     public User(String uname, String pword) {
@@ -195,5 +195,13 @@ public class User implements Serializable {
 
     public void setAlive(boolean[] alive) {
         this.alive = alive;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

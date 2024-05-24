@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import edu.ufp.inf.sd.rmi.Proj.server.DigLibFactoryimpl;
 import edu.ufp.inf.sd.rmi.Proj.server.State;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 
@@ -25,4 +26,8 @@ public interface ObserverRI extends Remote {
     public void setUser(User user) throws RemoteException;
 
     public Player findPlayer(int id)  throws RemoteException;
+
+    Game createGame(int numPlayer, SubjectRI subject, DigLibFactoryimpl digLibFactoryimpl) throws RemoteException;
+
+    boolean joinSala(int id, Game sala) throws RemoteException, InterruptedException;
 }

@@ -56,28 +56,29 @@ class ClientManager extends Thread implements Serializable {
       this.id = id;
       this.observer = observer;
       this.game = game;
-      //(ct = new CoordinatesThrower(this.id, this.observer, this.game).start());
-      ct = new CoordinatesThrower(this.id, this.observer, this.game);
-      ct.start();
+      (ct = new CoordinatesThrower(this.id, this.observer, this.game)).start();
       (mt = new MapUpdatesThrower(this.id, this.observer, this.game)).start();
 
-      try {
+      //try {
          System.out.print("Iniciando conexão com o jogador " + this.id + "...");
          //System.out.println("Observer CM:" + observer.getId());
-         this.in = observer.getLastObserverState(); // para receber do edu.ufp.inf.sd.rmi.Proj.cliente
-      } catch (IOException e) {
-         System.out.println(" erro: " + e + "\n");
-         System.exit(1);
-      }
+         //this.in = observer.getLastObserverState(); // para receber do edu.ufp.inf.sd.rmi.Proj.cliente
+//      } catch (IOException e) {
+//         System.out.println(" erro: " + e + "\n");
+//         System.exit(1);
+//      }
       System.out.print(" ok\n");
 
       game.findPlayerData(id).logged = true;
       game.findPlayerData(id).alive = true;
+      game.findPlayerData(id).setUserID(id);
       sendInitialSettings(game); // envia uma única string
 
       //notifica aos clientes já logados
       for (ObserverRI obs: this.game.subjectRI.getObservers()){
-         if (obs.getUser().equals(observer.getUser())){
+         //if (obs.getUser().equals(observer.getUser())){
+         if(obs.getId() == observer.getId()){
+            System.out.println("CM entrou");
             obs.getSubjectRI().setState(new edu.ufp.inf.sd.rmi.Proj.server.State(obs.getUser().getId(), obs.getUser().getId()+" playerJoined"));
             game.loggedIsFull();
          }

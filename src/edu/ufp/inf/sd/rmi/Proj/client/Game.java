@@ -43,11 +43,9 @@ public class Game extends JPanel implements Serializable {
 
    public PlayerData[] playerData = new PlayerData[Const.QTY_PLAYERS];
    public Coordinate[][] map = new Coordinate[Const.LIN][Const.COL];
-   public boolean gameStarted;
 
    public Game(int maxPlayers, User user, SubjectRI subject) {
       this.id = currId++;
-      this.gameStarted = false;
 
       setPreferredSize(new Dimension(Const.COL*Const.SIZE_SPRITE_MAP, Const.LIN*Const.SIZE_SPRITE_MAP));
       try {
@@ -68,7 +66,8 @@ public class Game extends JPanel implements Serializable {
 //         enemy2 = new Player((Client.id+2)%Const.QTY_PLAYERS, this);
 //         enemy3 = new Player((Client.id+3)%Const.QTY_PLAYERS, this);
          } catch (Exception e){
-            System.out.println(" erro: " + e + "\n");
+            //System.out.println(" erro: " + e + "\n");
+            e.printStackTrace();
             System.exit(1);
       }
 //      catch (InterruptedException e) {
@@ -78,13 +77,6 @@ public class Game extends JPanel implements Serializable {
       System.out.print(" ok\n");
 
       System.out.println("Meu jogador: " + Sprite.personColors[user.getId()]);
-   }
-
-   public void startGame() throws InterruptedException, RemoteException {
-      for(int i = 0; i < users.size(); i++){
-         User user = users.get(i);
-         //players.add(new Player(this, user, this));
-      }
    }
 
    //desenha os componentes, chamada por paint() e repaint()
@@ -122,6 +114,7 @@ public class Game extends JPanel implements Serializable {
       for(int i = 0; i < maxPlayers; i++){
          if (!playerData[i].logged) {
             playerData[i].setUserID(user.getId());
+            System.out.println("Start ClientManger id: " + user.getId());
             new ClientManager(user.getObserver(), user.getId(), this).start();
             break;
          }
@@ -181,10 +174,8 @@ public class Game extends JPanel implements Serializable {
             return false;
       }
 
-      if(!this.gameStarted)
-      {
-         this.subjectRI.setState(new State("StartGame"));
-      }
+      this.subjectRI.setState(new State("StartGame"));
+
       return true;
    }
 

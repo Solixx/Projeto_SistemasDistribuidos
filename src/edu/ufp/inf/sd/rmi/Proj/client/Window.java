@@ -19,7 +19,6 @@ class Window extends JFrame implements Serializable {
         Sprite.setMaxLoopStatus();
 
         add(game);
-        game.startGame();
 
         setTitle("bomberman");
         pack();

@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.Proj.server;
 import edu.ufp.inf.sd.rmi.Proj.client.User;
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @author rmoreira
  *
  */
-public class DBMockup {
+public class DBMockup implements Serializable {
 
     private final ArrayList<Game> games;// = new ArrayList(); //TODO Mudar para Salas
     private final ArrayList<User> users;// = new ArrayList();

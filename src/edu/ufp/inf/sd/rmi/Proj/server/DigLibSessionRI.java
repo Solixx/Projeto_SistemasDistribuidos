@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
+import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.Proj.client.User;
 
 import java.rmi.Remote;
@@ -26,4 +27,14 @@ public interface DigLibSessionRI extends Remote {
     User getUser() throws RemoteException;
 
     void setUser(User user) throws RemoteException;
+
+    DigLibFactoryimpl getDigLibFactoryimpl() throws RemoteException;
+
+    void insertSalaDB(Game game) throws RemoteException;
+
+    SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException;
+
+    void updateSubjectRIGame(int id, ObserverRI observer) throws RemoteException;
+
+    Game serachGame(int id) throws RemoteException;
 }

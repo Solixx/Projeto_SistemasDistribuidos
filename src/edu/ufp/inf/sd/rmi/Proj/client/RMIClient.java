@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 
 import edu.ufp.inf.sd.rmi.Proj.server.DigLibFactoryRI;
 import edu.ufp.inf.sd.rmi.Proj.server.DigLibSessionRI;
+import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 import java.rmi.NotBoundException;
@@ -147,7 +148,7 @@ public class RMIClient {
     }
 
     private void waitingRoom(User user) throws RemoteException, InterruptedException {
-        Game game = user.game;
+        Game game = user.getGame();
         System.out.println("À espera de jogadores");
 
         //new Receiver(game, user.getObserver(), user).start();
@@ -180,12 +181,13 @@ public class RMIClient {
                 if (scanner2.nextInt() == 1) {
                     System.out.println("Insira o numero da sala");
                     Scanner numeroSala = new Scanner(System.in);
-                    if(thisSession.joinSala(numeroSala.nextInt())){
-                        System.out.println("Entrou");
-                        waitingRoom(thisSession.getUser());
-                    } else{
-                        System.out.println("Erro ao entrar na sala");
-                    }
+
+//                    if(user.getGame() != null){
+//                        System.out.println("Entrou");
+//                        waitingRoom(thisSession.getUser());
+//                    } else{
+//                        System.out.println("Erro ao entrar na sala");
+//                    }
                 }
                 menuSalas(thisSession);
             case 2:
@@ -196,7 +198,7 @@ public class RMIClient {
 
                 int numPlayer = scanner3.nextInt();
 
-                if(thisSession.criarSala(numPlayer)){
+                if(createGame(thisSession, numPlayer)){
                     System.out.println("Entrou");
                     waitingRoom(thisSession.getUser());
                 } else{
@@ -209,9 +211,13 @@ public class RMIClient {
 
                 System.out.println("Insira o numero da sala");
                 Scanner numeroSala = new Scanner(System.in);
-                thisSession.joinSala(numeroSala.nextInt());
-                System.out.println("Entrou");
-                waitingRoom(thisSession.getUser());
+
+                if(joinGame(thisSession, numeroSala.nextInt())){
+                    System.out.println("Entrou");
+                    waitingRoom(thisSession.getUser());
+                } else{
+                    System.out.println("Sala cheia ou user já em jogo.");
+                }
 
                 menuSalas(thisSession);
             default:
@@ -219,5 +225,36 @@ public class RMIClient {
 
                 menuSalas(menuAuth());
         }
+    }
+
+    public void initGame(Game game, ObserverRI observer, User user) throws RemoteException {
+        observer.setSubjectRI(game.subjectRI);
+        observer.setUser(user);
+        user.setObserver(observer);
+        user.setGame(game);
+    }
+
+    public boolean createGame(DigLibSessionRI thisSession, int numPlayer) throws RemoteException {
+        User user = thisSession.getUser();
+        if(user.getGame() != null)  return false;
+        ObserverRI observer = new ObserverImpl(user);
+        SubjectRI subject = thisSession.createSubjectRI(observer);
+        Game game = new Game(numPlayer, user, subject);
+        user.setGame(game);
+        thisSession.insertSalaDB(game);
+
+        initGame(game, observer, user);
+        return true;
+    }
+
+    public boolean joinGame(DigLibSessionRI thisSession, int idSala) throws RemoteException, InterruptedException {
+        User user = thisSession.getUser();
+        Game game = thisSession.serachGame(idSala);
+        if(user.getGame() != null || game.users.size() >= game.maxPlayers)  return false;
+        ObserverRI observer = new ObserverImpl(user);
+        thisSession.updateSubjectRIGame(idSala, observer);
+        user.setGame(game);
+        game.addUser(user);
+        return true;
     }
 }

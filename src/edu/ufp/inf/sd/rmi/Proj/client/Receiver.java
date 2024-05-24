@@ -31,8 +31,8 @@ public class Receiver extends Thread implements Serializable {
                continue;
             }
 
-            if(str[0].equals("StartGame") && !game.gameStarted){
-               new Window(user.game, user.game.findObserver(user.getId()));
+            if(str[0].equals("StartGame")){
+               new Window(user.getGame(), user.getGame().findObserver(user.getId()));
                continue;
             }
 
@@ -82,17 +82,5 @@ public class Receiver extends Thread implements Serializable {
       this.game = game;
       this.observer = observer;
       this.user = user;
-   }
-
-   public static boolean isNumeric(String str) {
-      if (str == null || str.isEmpty()) {
-         return false;
-      }
-      try {
-         Integer.parseInt(str);
-         return true;
-      } catch (NumberFormatException e) {
-         return false;
-      }
    }
 }

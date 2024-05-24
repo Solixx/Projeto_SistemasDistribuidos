@@ -5,11 +5,12 @@ import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.Proj.client.User;
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSessionRI {
+public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSessionRI, Serializable {
 
     private  DigLibFactoryimpl digLibFactoryimpl;
     private User user;
@@ -35,9 +36,9 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
         SubjectRI subject = new SubjectImpl();
         new ObserverImpl(this.user, subject);
 
-        if(user.game == null){
+        if(user.getGame() == null){
             Game game = new Game(numPlayer, this.user, subject);
-            this.user.game = game;
+            this.user.setGame(game);
             this.digLibFactoryimpl.getDbMockup().insertSala(game);
             return true;
         } else{
@@ -49,7 +50,7 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     public boolean joinSala(int id) throws RemoteException, InterruptedException {
         Game sala = this.digLibFactoryimpl.getDbMockup().select(id);
 
-        if(user.game == null){
+        if(user.getGame() == null){
             if(sala.users.size() < sala.maxPlayers){
                 new ObserverImpl(this.user, sala.subjectRI);
                 sala.addUser(user);
@@ -75,9 +76,6 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
         return this.getDigLibFactoryimpl().getDbMockup().findUser(name, pwd);
     }
 
-    public DigLibFactoryimpl getDigLibFactoryimpl() {
-        return digLibFactoryimpl;
-    }
 
     public void setDigLibFactoryimpl(DigLibFactoryimpl digLibFactoryimpl) throws RemoteException {
         this.digLibFactoryimpl = digLibFactoryimpl;
@@ -91,4 +89,35 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
         this.user = user;
     }
 
+    @Override
+    public DigLibFactoryimpl getDigLibFactoryimpl() throws RemoteException {
+        return digLibFactoryimpl;
+    }
+
+    @Override
+    public void insertSalaDB(Game game) throws RemoteException {
+        digLibFactoryimpl.getDbMockup().insertSala(game);
+    }
+
+    @Override
+    public SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException {
+        SubjectRI subject = new SubjectImpl();
+        subject.attach(observer);
+        observer.setSubjectRI(subject);
+        return subject;
+    }
+
+    @Override
+    public void updateSubjectRIGame(int id, ObserverRI observer) throws RemoteException {
+        Game game = serachGame(id);
+        SubjectRI subject = game.subjectRI;
+
+        subject.attach(observer);
+        observer.setSubjectRI(subject);
+    }
+
+    @Override
+    public Game serachGame(int id) throws RemoteException {
+        return digLibFactoryimpl.getDbMockup().select(id);
+    }
 }

@@ -16,9 +16,9 @@ public class Player implements Serializable {
 
    Player(JPanel panel, User user, Game game) throws InterruptedException {
       int id = user.getId();
-      this.x = user.getSpawn()[id].x;
-      this.y = user.getSpawn()[id].y;
-      this.color = Sprite.personColors[id];
+      this.x = user.getSpawn()[game.players.size()].x;
+      this.y = user.getSpawn()[game.players.size()].y;
+      this.color = Sprite.personColors[game.players.size()];
       this.panel = panel;
       for (PlayerData pd: game.playerData) {
          if(pd.userID == id){
@@ -89,7 +89,7 @@ class StatusChanger extends Thread implements Serializable {
 
          if (p.status.equals("dead-4")) {
             p.alive = false;
-            if (this.p.user.game.players.contains(this.p))
+            if (this.p.user.getGame().players.contains(this.p))
                System.exit(1);
          }
       }

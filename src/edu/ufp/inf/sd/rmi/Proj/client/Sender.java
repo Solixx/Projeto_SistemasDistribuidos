@@ -14,9 +14,10 @@ public class Sender extends KeyAdapter implements Serializable {
    public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_SPACE) {
          try {
-            int x = observer.getUser().game.findPlayer(observer.getId()).getX();
-            int y = observer.getUser().game.findPlayer(observer.getId()).getY();
+            int x = observer.getUser().getGame().findPlayer(observer.getId()).getX();
+            int y = observer.getUser().getGame().findPlayer(observer.getId()).getY();
 
+            System.out.println("Sender bomba Uid: " + observer.getId() + " Pid " + observer.getUser().getGame().findPlayer(observer.getId()).getUser().getId());
             observer.getSubjectRI().setState(new State(observer.getId(), "pressedSpace " + x + " " + y));
 
          } catch (RemoteException | InterruptedException ex) {
