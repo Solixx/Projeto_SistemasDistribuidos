@@ -31,10 +31,11 @@ public interface DigLibSessionRI extends Remote {
     DigLibFactoryimpl getDigLibFactoryimpl() throws RemoteException;
 
     void insertSalaDB(Game game) throws RemoteException;
+    void updateSalaDB(Game game) throws RemoteException;
 
     SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException;
 
-    void updateSubjectRIGame(int id, ObserverRI observer) throws RemoteException;
+    void updateSubjectRIGame(int id, ObserverRI observer, User user) throws RemoteException;
 
     Game serachGame(int id) throws RemoteException;
 }

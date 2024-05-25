@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.Proj.client;
 
 import edu.ufp.inf.sd.rmi.Proj.server.DigLibFactoryRI;
 import edu.ufp.inf.sd.rmi.Proj.server.DigLibSessionRI;
+import edu.ufp.inf.sd.rmi.Proj.server.State;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
@@ -81,7 +82,7 @@ public class RMIClient {
             thisSession = menuAuth();
 
 
-            //System.out.println("Session: " + thisSession);
+            System.out.println("Session Client: " + thisSession.getUser().getId());
 
             menuSalas(thisSession);
 
@@ -230,31 +231,33 @@ public class RMIClient {
     public void initGame(Game game, ObserverRI observer, User user) throws RemoteException {
         observer.setSubjectRI(game.subjectRI);
         observer.setUser(user);
+        observer.setGame(game);
         user.setObserver(observer);
         user.setGame(game);
     }
 
-    public boolean createGame(DigLibSessionRI thisSession, int numPlayer) throws RemoteException {
+    public boolean createGame(DigLibSessionRI thisSession, int numPlayer) throws RemoteException, InterruptedException {
         User user = thisSession.getUser();
         if(user.getGame() != null)  return false;
         ObserverRI observer = new ObserverImpl(user);
         SubjectRI subject = thisSession.createSubjectRI(observer);
         Game game = new Game(numPlayer, user, subject);
-        user.setGame(game);
+        initGame(game, observer, user);
+        game.addUser(thisSession.getUser());
         thisSession.insertSalaDB(game);
 
-        initGame(game, observer, user);
         return true;
     }
 
     public boolean joinGame(DigLibSessionRI thisSession, int idSala) throws RemoteException, InterruptedException {
-        User user = thisSession.getUser();
         Game game = thisSession.serachGame(idSala);
-        if(user.getGame() != null || game.users.size() >= game.maxPlayers)  return false;
-        ObserverRI observer = new ObserverImpl(user);
-        thisSession.updateSubjectRIGame(idSala, observer);
-        user.setGame(game);
-        game.addUser(user);
+        if(thisSession.getUser().getGame() != null || game.users.size() >= game.maxPlayers)  return false;
+        ObserverRI observer = new ObserverImpl(thisSession.getUser());
+        thisSession.updateSubjectRIGame(idSala, observer, thisSession.getUser());
+        initGame(game, observer, thisSession.getUser());
+        game.addUser(thisSession.getUser());
+        thisSession.updateSalaDB(game);
+
         return true;
     }
 }

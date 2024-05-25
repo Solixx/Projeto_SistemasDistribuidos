@@ -10,6 +10,7 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
 
     private State subjectState;
     private final ArrayList<ObserverRI> observers = new ArrayList<>();
+    private DBMockup dbMockup;
 
     protected SubjectImpl() throws RemoteException {
         super();
@@ -44,6 +45,16 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
     @Override
     public ArrayList<ObserverRI> getObservers() throws RemoteException {
         return this.observers;
+    }
+
+    @Override
+    public DBMockup getDbMockup() throws RemoteException {
+        return dbMockup;
+    }
+
+    @Override
+    public void setDbMockup(DBMockup dbMockup) throws RemoteException {
+        this.dbMockup = dbMockup;
     }
 
     public void notifyAllObservers() throws RemoteException, InterruptedException {

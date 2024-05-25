@@ -8,6 +8,7 @@ import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 
 public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Serializable {
 
@@ -15,6 +16,7 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Se
     private State lastObserverState;
     protected SubjectRI subjectRI;
     protected User user;
+    private Game game;
 
     public ObserverImpl(User user) throws RemoteException {
         super();
@@ -41,9 +43,11 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Se
     @Override
     public void update() throws RemoteException, InterruptedException {
         setLastObserverState(this.subjectRI.getState());
+
         for (Player p: user.getGame().players) {
-            //System.out.println("Id: " + user.getId() + "players: " + p);
-            if(p.user.getId() == user.getId()){
+            System.out.println("Id: " + user.getId() + "players: " + p.getId());
+            if(p.getId() == user.getId()){
+                System.out.println("P = U: ");
                 p.panel.repaint();
             }
         }
@@ -52,51 +56,65 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Se
     }
 
     public void receiver() throws RemoteException, InterruptedException {
-        String[] str;
+        try {
+            String[] str;
 
-        str = lastObserverState.getMsg().split(" ");
+            //System.out.println("State: " + lastObserverState.getMsg());
+            str = lastObserverState.getMsg().split(" ");
 
-        if(str[0].isEmpty())    return;
+            if (str[0].isEmpty()) return;
 
-        if(str[0].equals("StartGame")){
-            System.out.println("Userid: " + user.getId() + " State: " + lastObserverState.getMsg());
-            new Window(user.getGame(), this);
-            return;
-        }
-
-        //System.out.println("lastState: " + lastObserverState.getMsg() + "userID: " + user.getId());
-
-        if(!isNumeric(str[0])) return;
-
-        Player p = user.getGame().findPlayer(Integer.parseInt(str[0]));
-
-
-        if (str[1].equals("mapUpdate")) { //p null
-            user.getGame().setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
-            //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
-            user.getGame().findPlayer(user.getId()).panel.repaint();
-            //game.you.panel.repaint();
-        }
-        else if (str[1].equals("newCoordinate")) {
-            p.x = Integer.parseInt(str[2]);
-            p.y = Integer.parseInt(str[3]);
-
-            if(p.getUser().getId() == 1){
-                System.out.println("Player: " + id);
-                System.out.println("Str P1 newCord: " + str[0] + " " + str[1] + " " + str[2] +  " " + str[3]);
+            if (str[0].equals("StartGame")) {
+                System.out.println("Userid: " + user.getId() + " State: " + lastObserverState.getMsg());
+                ObserverRI obs = this;
+                Runnable runer = () -> {
+                    try {
+                        new Window(user.getGame(), obs);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                };
+                Thread t = new Thread(runer);
+                t.start();
+                //new Window(user.getGame(), this);
+                return;
             }
 
-            user.getGame().findPlayer(user.getId()).panel.repaint();
-            //game.you.panel.repaint();
-        }
-        else if (str[1].equals("newStatus")) {
-            p.sc.setLoopStatus(str[2]);
-        }
-        else if (str[1].equals("stopStatusUpdate")) {
-            p.sc.stopLoopStatus();
-        }
-        else if (str[1].equals("playerJoined")) {
-            p.alive = true;
+            //System.out.println("lastState: " + lastObserverState.getMsg() + "userID: " + user.getId());
+
+            if (!isNumeric(str[0])) return;
+
+            Player p = user.getGame().findPlayer(Integer.parseInt(str[0]));
+
+
+            switch (str[1]) {
+                case "mapUpdate":  //p null
+                    user.getGame().setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
+                    //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
+                    user.getGame().findPlayer(user.getId()).panel.repaint();
+                    //game.you.panel.repaint();
+                    break;
+                case "newCoordinate":
+                    p.x = Integer.parseInt(str[2]);
+                    p.y = Integer.parseInt(str[3]);
+
+                    user.getGame().findPlayer(user.getId()).panel.repaint();
+                    //game.you.panel.repaint();
+                    break;
+                case "newStatus":
+                    p.sc.setLoopStatus(str[2]);
+                    break;
+                case "stopStatusUpdate":
+                    p.sc.stopLoopStatus();
+                    break;
+                case "playerJoined":
+                    p.alive = true;
+                    break;
+            }
+        } catch (Exception e){
+            System.out.println(e);
         }
     }
 
@@ -133,6 +151,16 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Se
         } else{
             return false;
         }
+    }
+
+    @Override
+    public Game getGame() throws RemoteException {
+        return game;
+    }
+
+    @Override
+    public void setGame(Game game) throws RemoteException {
+        this.game = game;
     }
 
     @Override

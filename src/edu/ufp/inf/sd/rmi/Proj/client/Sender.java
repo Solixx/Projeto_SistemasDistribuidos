@@ -17,7 +17,7 @@ public class Sender extends KeyAdapter implements Serializable {
             int x = observer.getUser().getGame().findPlayer(observer.getId()).getX();
             int y = observer.getUser().getGame().findPlayer(observer.getId()).getY();
 
-            System.out.println("Sender bomba Uid: " + observer.getId() + " Pid " + observer.getUser().getGame().findPlayer(observer.getId()).getUser().getId());
+            System.out.println("Sender bomba Uid: " + observer.getId() + " Pid " + observer.getUser().getGame().findPlayer(observer.getId()).getId());
             observer.getSubjectRI().setState(new State(observer.getId(), "pressedSpace " + x + " " + y));
 
          } catch (RemoteException | InterruptedException ex) {

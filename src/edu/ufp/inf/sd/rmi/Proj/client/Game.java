@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
+import edu.ufp.inf.sd.rmi.Proj.server.DBMockup;
 import edu.ufp.inf.sd.rmi.Proj.server.State;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectImpl;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
@@ -59,7 +60,7 @@ public class Game extends JPanel implements Serializable {
 
          this.subjectRI = subject;
 
-         this.addUser(user);
+         //this.addUser(user);
 
 //         you = new Player(Client.id, this);
 //         enemy1 = new Player((Client.id+1)%Const.QTY_PLAYERS, this);
@@ -75,8 +76,6 @@ public class Game extends JPanel implements Serializable {
 //         System.exit(1);
 //      }
       System.out.print(" ok\n");
-
-      System.out.println("Meu jogador: " + Sprite.personColors[user.getId()]);
    }
 
    //desenha os componentes, chamada por paint() e repaint()
@@ -108,14 +107,16 @@ public class Game extends JPanel implements Serializable {
    }
 
    public void addUser(User user) throws RemoteException, InterruptedException {
+      //subjectRI.setState(new State(0, "GameUserUpdate"));
       this.users.add(user);
       user.joinGame(this);
-      players.add(new Player(this, user, this));
+      //subjectRI.setState(new State(0, "GamePlayersUpdate"));
+      players.add(new Player(this, user.getId(), this));
+      //subjectRI.setState(new State(0, "GamePlayerDataUpdate"));
       for(int i = 0; i < maxPlayers; i++){
          if (!playerData[i].logged) {
             playerData[i].setUserID(user.getId());
-            System.out.println("Start ClientManger id: " + user.getId());
-            new ClientManager(user.getObserver(), user.getId(), this).start();
+            new ClientManager(subjectRI.getObservers().get(i), user.getId(), this).start();
             break;
          }
       }
@@ -143,7 +144,7 @@ public class Game extends JPanel implements Serializable {
 
    public Player findPlayer(int id){
       for (Player player: this.players) {
-         if(player.getUser().getId() == id){
+         if(player.getId() == id){
             return player;
          }
       }

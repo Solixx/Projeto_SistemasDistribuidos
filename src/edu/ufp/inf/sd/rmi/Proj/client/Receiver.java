@@ -27,40 +27,55 @@ public class Receiver extends Thread implements Serializable {
 
             str = observer.getLastObserverState().getMsg().split(" ");
 
-            if(str[0].isEmpty()){
-               continue;
+            if (str[0].isEmpty()) return;
+
+            if (str[0].equals("StartGame")) {
+               System.out.println("Userid: " + user.getId() + " State: " + observer.getLastObserverState().getMsg());
+               Runnable runer = () -> {
+                  try {
+                     new Window(user.getGame(), observer);
+                  } catch (InterruptedException e) {
+                     throw new RuntimeException(e);
+                  } catch (RemoteException e) {
+                     throw new RuntimeException(e);
+                  }
+               };
+               Thread t = new Thread(runer);
+               t.start();
+               //new Window(user.getGame(), this);
+               return;
             }
 
-            if(str[0].equals("StartGame")){
-               new Window(user.getGame(), user.getGame().findObserver(user.getId()));
-               continue;
-            }
+            //System.out.println("lastState: " + lastObserverState.getMsg() + "userID: " + user.getId());
 
-            System.out.println("str[0]: " + str[0]);
+            if (!isNumeric(str[0])) return;
 
-            this.p = fromWhichPlayerIs(Integer.parseInt(str[0]));
+            Player p = user.getGame().findPlayer(Integer.parseInt(str[0]));
 
 
-            if (str[1].equals("mapUpdate")) { //p null
-               game.setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
-               //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
-               game.findPlayer(user.getId()).panel.repaint();
-               //game.you.panel.repaint();
-            }
-            else if (str[1].equals("newCoordinate")) {
-               p.x = Integer.parseInt(str[2]);
-               p.y = Integer.parseInt(str[3]);
-               game.findPlayer(user.getId()).panel.repaint();
-               //game.you.panel.repaint();
-            }
-            else if (str[1].equals("newStatus")) {
-               p.sc.setLoopStatus(str[2]);
-            }
-            else if (str[1].equals("stopStatusUpdate")) {
-               p.sc.stopLoopStatus();
-            }
-            else if (str[1].equals("playerJoined")) {
-               p.alive = true;
+            switch (str[1]) {
+               case "mapUpdate":  //p null
+                  user.getGame().setSpriteMap(str[2], Integer.parseInt(str[3]), Integer.parseInt(str[4]), user);
+                  //Game.setSpriteMap(Client.in.next(), Client.in.nextInt(), Client.in.nextInt(), user);
+                  user.getGame().findPlayer(user.getId()).panel.repaint();
+                  //game.you.panel.repaint();
+                  break;
+               case "newCoordinate":
+                  p.x = Integer.parseInt(str[2]);
+                  p.y = Integer.parseInt(str[3]);
+
+                  user.getGame().findPlayer(user.getId()).panel.repaint();
+                  //game.you.panel.repaint();
+                  break;
+               case "newStatus":
+                  p.sc.setLoopStatus(str[2]);
+                  break;
+               case "stopStatusUpdate":
+                  p.sc.stopLoopStatus();
+                  break;
+               case "playerJoined":
+                  p.alive = true;
+                  break;
             }
 
          } catch (Exception e) {
@@ -82,5 +97,17 @@ public class Receiver extends Thread implements Serializable {
       this.game = game;
       this.observer = observer;
       this.user = user;
+   }
+
+   public static boolean isNumeric(String str) {
+      if (str == null || str.isEmpty()) {
+         return false;
+      }
+      try {
+         Integer.parseInt(str);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
+      }
    }
 }

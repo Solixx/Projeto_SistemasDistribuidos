@@ -17,4 +17,8 @@ public interface SubjectRI extends Remote {
     void setState(State state) throws RemoteException, InterruptedException;
 
     ArrayList<ObserverRI> getObservers() throws RemoteException;
+
+    DBMockup getDbMockup() throws RemoteException;
+
+    void setDbMockup(DBMockup dbMockup) throws RemoteException;
 }

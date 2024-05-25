@@ -41,6 +41,7 @@ public class DBMockup implements Serializable {
     public void register(String u, String p) {
         if (!exists(u, p)) {
             users.add(new User(u, p));
+            System.out.println("Session Server: " + users.get(users.size()-1).getId());
         }
     }
 
@@ -75,6 +76,16 @@ public class DBMockup implements Serializable {
      */
       public void insertSala(Game sala) {
           games.add(sala);
+      }
+
+      public void updateSala(Game sala){
+          for(int i = 0; i < games.size(); i++){
+              Game g = games.get(i);
+              if(g.getId() == sala.getId()){
+                  games.set(i, sala);
+                  return;
+              }
+          }
       }
 
       public ArrayList<Game> listSalas(){

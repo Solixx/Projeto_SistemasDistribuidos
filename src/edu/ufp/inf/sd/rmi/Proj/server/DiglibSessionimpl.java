@@ -100,20 +100,23 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     }
 
     @Override
+    public void updateSalaDB(Game game) throws RemoteException {
+        digLibFactoryimpl.getDbMockup().updateSala(game);
+    }
+
+    @Override
     public SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException {
         SubjectRI subject = new SubjectImpl();
+        subject.setDbMockup(digLibFactoryimpl.getDbMockup());
         subject.attach(observer);
         observer.setSubjectRI(subject);
         return subject;
     }
 
     @Override
-    public void updateSubjectRIGame(int id, ObserverRI observer) throws RemoteException {
+    public void updateSubjectRIGame(int id, ObserverRI observer, User user) throws RemoteException {
         Game game = serachGame(id);
-        SubjectRI subject = game.subjectRI;
-
-        subject.attach(observer);
-        observer.setSubjectRI(subject);
+        game.subjectRI.attach(observer);
     }
 
     @Override

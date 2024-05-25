@@ -30,4 +30,8 @@ public interface ObserverRI extends Remote {
     Game createGame(int numPlayer, SubjectRI subject, DigLibFactoryimpl digLibFactoryimpl) throws RemoteException;
 
     boolean joinSala(int id, Game sala) throws RemoteException, InterruptedException;
+
+    Game getGame() throws RemoteException;
+    void setGame(Game game) throws RemoteException;
+
 }

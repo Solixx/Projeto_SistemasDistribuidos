@@ -13,14 +13,14 @@ import java.util.*;
 //a cada edu.ufp.inf.sd.rmi.Proj.cliente que entra no servidor, uma nova thread é instanciada para tratá-lo
 class ClientManager extends Thread implements Serializable {
    //static List<PrintStream> listOutClients = new ArrayList<PrintStream>();
-   private Game game;
+   private final Game game;
 
    //private Socket clientSocket = null;
    private ObserverRI observer = null;
    //private Scanner in = null;
    //private PrintStream out = null;
    private edu.ufp.inf.sd.rmi.Proj.server.State in = null;
-   private int id;
+   //private int id;
 
    CoordinatesThrower ct;
    MapUpdatesThrower mt;
@@ -53,14 +53,14 @@ class ClientManager extends Thread implements Serializable {
 //   }
 
    ClientManager(ObserverRI observer, int id, Game game) throws RemoteException, InterruptedException {
-      this.id = id;
+      //this.id = id;
       this.observer = observer;
       this.game = game;
-      (ct = new CoordinatesThrower(this.id, this.observer, this.game)).start();
-      (mt = new MapUpdatesThrower(this.id, this.observer, this.game)).start();
+      (ct = new CoordinatesThrower(observer.getId(), this.observer, this.game)).start();
+      (mt = new MapUpdatesThrower(observer.getId(), this.observer, this.game)).start();
 
       //try {
-         System.out.print("Iniciando conexão com o jogador " + this.id + "...");
+         System.out.print("Iniciando conexão com o jogador " + observer.getId() + "...");
          //System.out.println("Observer CM:" + observer.getId());
          //this.in = observer.getLastObserverState(); // para receber do edu.ufp.inf.sd.rmi.Proj.cliente
 //      } catch (IOException e) {
@@ -78,7 +78,7 @@ class ClientManager extends Thread implements Serializable {
       for (ObserverRI obs: this.game.subjectRI.getObservers()){
          //if (obs.getUser().equals(observer.getUser())){
          if(obs.getId() == observer.getId()){
-            System.out.println("CM entrou");
+            System.out.println("CM entrou: " + obs.getId() + " user: " + obs.getUser().getId());
             obs.getSubjectRI().setState(new edu.ufp.inf.sd.rmi.Proj.server.State(obs.getUser().getId(), obs.getUser().getId()+" playerJoined"));
             game.loggedIsFull();
          }
@@ -92,14 +92,14 @@ class ClientManager extends Thread implements Serializable {
 
             String str[] = observer.getLastObserverState().getMsg().split(" ");
 
-            if (str[0].equals("keyCodePressed") && game.findPlayerData(id).alive) {
+            if (str[0].equals("keyCodePressed") && game.findPlayerData(observer.getId()).alive) {
                ct.keyCodePressed(Integer.parseInt(str[1]));
             }
-            else if (str[0].equals("keyCodeReleased") && game.findPlayerData(id).alive) {
+            else if (str[0].equals("keyCodeReleased") && game.findPlayerData(observer.getId()).alive) {
                ct.keyCodeReleased(Integer.parseInt(str[1]));
             }
-            else if (str[0].equals("pressedSpace") && game.findPlayerData(id).numberOfBombs >= 1) {
-               game.findPlayerData(id).numberOfBombs--;
+            else if (str[0].equals("pressedSpace") && game.findPlayerData(observer.getId()).numberOfBombs >= 1) {
+               game.findPlayerData(observer.getId()).numberOfBombs--;
                mt.setBombPlanted(Integer.parseInt(str[1]), Integer.parseInt(str[2]));
             }
          } catch (RemoteException | InterruptedException e) {
@@ -139,10 +139,10 @@ class ClientManager extends Thread implements Serializable {
    void clientDesconnected() throws RemoteException {
       this.game.subjectRI.detach(observer);
       //listOutClients.remove(out);
-      this.game.findPlayerData(id).logged = false;
+      this.game.findPlayerData(observer.getId()).logged = false;
       //Server.player[id].logged = false;
       //try {
-         System.out.print("Encerrando conexão com o jogador " + this.id + "...");
+         System.out.print("Encerrando conexão com o jogador " + this.observer.getId() + "...");
          //in.close();
          //out.close();
          //clientSocket.close();

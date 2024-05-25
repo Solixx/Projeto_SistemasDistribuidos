@@ -36,6 +36,7 @@ class CoordinatesThrower extends Thread implements Serializable {
             try {
                if (coordinateIsValid(newX, newY)) {
                   try {
+                     System.out.println("ObsId: " + observer.getId() + " newCoordinate " + newX + " " + newY);
                      observer.getSubjectRI().setState(new edu.ufp.inf.sd.rmi.Proj.server.State(observer.getId(), observer.getId() + " newCoordinate " + newX + " " + newY));
                   } catch (RemoteException | InterruptedException e) {
                      throw new RuntimeException(e);
