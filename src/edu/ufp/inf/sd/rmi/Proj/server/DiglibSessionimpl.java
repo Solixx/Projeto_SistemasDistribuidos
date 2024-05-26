@@ -1,8 +1,7 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
-import edu.ufp.inf.sd.rmi.Proj.client.ObserverImpl;
+import edu.ufp.inf.sd.rmi.Proj.client.Client;
 import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
-import edu.ufp.inf.sd.rmi.Proj.client.User;
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
 import java.io.Serializable;
@@ -21,61 +20,15 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
         this.user = user;
     }
 
-//    @Override
-//    public Book[] Search(String title, String author) {
-//        return this.digLibFactoryimpl.getDbMockup().select(title,author);
-//    }
-
     @Override
     public void logout() {
         this.digLibFactoryimpl.getSessionRIHashMap().remove(this.user);
     }
 
     @Override
-    public boolean criarSala(int numPlayer) throws RemoteException {
-        SubjectRI subject = new SubjectImpl();
-        new ObserverImpl(this.user, subject);
-
-        if(user.getGame() == null){
-            Game game = new Game(numPlayer, this.user, subject);
-            this.user.setGame(game);
-            this.digLibFactoryimpl.getDbMockup().insertSala(game);
-            return true;
-        } else{
-            return false;
-        }
+    public ArrayList<Sala> listSalas() throws RemoteException {
+        return digLibFactoryimpl.getDbMockup().getSalas();
     }
-
-    @Override
-    public boolean joinSala(int id) throws RemoteException, InterruptedException {
-        Game sala = this.digLibFactoryimpl.getDbMockup().select(id);
-
-        if(user.getGame() == null){
-            if(sala.users.size() < sala.maxPlayers){
-                new ObserverImpl(this.user, sala.subjectRI);
-                sala.addUser(user);
-            }
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    @Override
-    public ArrayList<Game> listSalas() throws RemoteException {
-        return this.digLibFactoryimpl.getDbMockup().listSalas();
-    }
-
-    @Override
-    public Game select(int id) throws RemoteException {
-        return this.digLibFactoryimpl.getDbMockup().select(id);
-    }
-
-    @Override
-    public User serachUser(String name, String pwd) throws RemoteException {
-        return this.getDigLibFactoryimpl().getDbMockup().findUser(name, pwd);
-    }
-
 
     public void setDigLibFactoryimpl(DigLibFactoryimpl digLibFactoryimpl) throws RemoteException {
         this.digLibFactoryimpl = digLibFactoryimpl;
@@ -95,32 +48,33 @@ public class DiglibSessionimpl extends UnicastRemoteObject implements DigLibSess
     }
 
     @Override
-    public void insertSalaDB(Game game) throws RemoteException {
-        digLibFactoryimpl.getDbMockup().insertSala(game);
+    public void createSala(int maxPlayers, ObserverRI observerRI) throws RemoteException, InterruptedException {
+        SubjectRI subjectRI = new SubjectImpl();
+        subjectRI.attach(observerRI);
+        observerRI.setSubjectRI(subjectRI);
+        Sala sala = new Sala(subjectRI, maxPlayers, observerRI.getUser());
+        digLibFactoryimpl.getDbMockup().getSalas().add(sala);
+        //System.out.println("Server Create SubjectRI: " + subjectRI + " User: " + observerRI.getUser() + " Sala: " + sala);
+//        System.out.println("Observers Create Server:");
+//        for (ObserverRI o: sala.getSubjectRI().getObservers()){
+//            System.out.println(o.getId());
+//        }
     }
 
     @Override
-    public void updateSalaDB(Game game) throws RemoteException {
-        digLibFactoryimpl.getDbMockup().updateSala(game);
-    }
+    public void joinSala(int id, ObserverRI observerRI) throws RemoteException, InterruptedException {
+        Sala sala = digLibFactoryimpl.getDbMockup().select(id);
+        sala.getSubjectRI().attach(observerRI);
+        observerRI.setSubjectRI(sala.getSubjectRI());
 
-    @Override
-    public SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException {
-        SubjectRI subject = new SubjectImpl();
-        subject.setDbMockup(digLibFactoryimpl.getDbMockup());
-        subject.attach(observer);
-        observer.setSubjectRI(subject);
-        return subject;
-    }
+//        System.out.println("Server Join SubjectRI: " + sala.getSubjectRI() + " User: " + observerRI.getUser() + " Sala: " + sala);
+//        System.out.println("Observers Join Server:");
+//        for (ObserverRI o: sala.getSubjectRI().getObservers()){
+//            System.out.println(o.getId());
+//        }
 
-    @Override
-    public void updateSubjectRIGame(int id, ObserverRI observer, User user) throws RemoteException {
-        Game game = serachGame(id);
-        game.subjectRI.attach(observer);
-    }
+        sala.attach(user);
 
-    @Override
-    public Game serachGame(int id) throws RemoteException {
-        return digLibFactoryimpl.getDbMockup().select(id);
+        digLibFactoryimpl.getDbMockup().updateSala(sala);
     }
 }

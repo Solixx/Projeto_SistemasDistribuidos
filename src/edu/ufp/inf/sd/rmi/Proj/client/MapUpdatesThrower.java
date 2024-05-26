@@ -1,7 +1,6 @@
 package edu.ufp.inf.sd.rmi.Proj.client;
 
-import com.sun.javafx.collections.MappingChange;
-import edu.ufp.inf.sd.rmi.Proj.server.State;
+import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -10,16 +9,15 @@ import java.rmi.RemoteException;
 class MapUpdatesThrower extends Thread implements Serializable {
    boolean bombPlanted;
    int id, l, c;
-   public ObserverRI observer;
-   public Game game;
-   public PlayerData player;
 
-   MapUpdatesThrower(int id, ObserverRI observer, Game game) {
+   Client client;
+   SubjectRI subjectRI;
+
+   MapUpdatesThrower(int id, Client client) throws RemoteException {
       this.id = id;
       this.bombPlanted = false;
-      this.observer = observer;
-      this.game = game;
-      this.player = game.findPlayerData(id);
+      this.client = client;
+      this.subjectRI = client.getObserverRI().getSubjectRI();
    }
 
    void setBombPlanted(int x, int y) {
@@ -32,10 +30,10 @@ class MapUpdatesThrower extends Thread implements Serializable {
       this.bombPlanted = true;
    }
 
-   //muda o mapa no servidor e no edu.ufp.inf.sd.rmi.Proj.cliente
+   //muda o mapa no servidor e no cliente
    public void changeMap(String keyWord, int l, int c) throws RemoteException, InterruptedException {
-      game.map[l][c].img = keyWord;
-      observer.getSubjectRI().setState(new edu.ufp.inf.sd.rmi.Proj.server.State(observer.getId(), "-1 mapUpdate " + keyWord + " " + l + " " + c));
+      client.map[l][c].img = keyWord;
+      subjectRI.setState(new edu.ufp.inf.sd.rmi.Proj.server.State(id, "-1 mapUpdate " + keyWord + " " + l + " " + c));
       //ClientManager.sendToAllClients("-1 mapUpdate " + keyWord + " " + l + " " + c);
    }
 
@@ -51,16 +49,16 @@ class MapUpdatesThrower extends Thread implements Serializable {
       int linPlayer, colPlayer, x, y;
 
       for (int id = 0; id < Const.QTY_PLAYERS; id++)
-         if (player.alive) {
-            x = player.x + Const.WIDTH_SPRITE_PLAYER / 2;
-            y = player.y + 2 * Const.HEIGHT_SPRITE_PLAYER / 3;
+         if (client.getPlayer()[id].alive) {
+            x = client.getPlayer()[id].x + Const.WIDTH_SPRITE_PLAYER / 2;
+            y = client.getPlayer()[id].y + 2 * Const.HEIGHT_SPRITE_PLAYER / 3;
    
             colPlayer = getColumnOfMap(x);
             linPlayer = getLineOfMap(y);
    
             if (linSprite == linPlayer && colSprite == colPlayer) {
-               player.alive = false;
-               observer.getSubjectRI().setState(new edu.ufp.inf.sd.rmi.Proj.server.State(observer.getId(), observer.getId() + " newStatus dead"));
+               client.getPlayer()[id].alive = false;
+               subjectRI.setState(new edu.ufp.inf.sd.rmi.Proj.server.State(id, id + " newStatus dead"));
                //ClientManager.sendToAllClients(id + " newStatus dead");
             }
          }
@@ -69,57 +67,60 @@ class MapUpdatesThrower extends Thread implements Serializable {
    public void run() {
       while (true) {
          if (bombPlanted) {
-            try{
-               bombPlanted = false;
+            bombPlanted = false;
 
-               for (String index: Const.indexBombPlanted) {
+            for (String index: Const.indexBombPlanted) {
+               try {
                   changeMap("bomb-planted-" + index, l, c);
-                  try {
-                     sleep(Const.RATE_BOMB_UPDATE);
-                  } catch (InterruptedException e) {}
+               } catch (RemoteException | InterruptedException e) {
+                  throw new RuntimeException(e);
                }
+               try {
+                  sleep(Const.RATE_BOMB_UPDATE);
+               } catch (InterruptedException e) {}
+            }
 
+            try{
                //efeitos da explosão
                new Thrower("center-explosion", Const.indexExplosion, Const.RATE_FIRE_UPDATE, l, c, this).start();
                checkIfExplosionKilledSomeone(l, c);
 
                //abaixo
-               if (game.map[l+1][c].img.equals("floor-1")) {
+               if (client.map[l+1][c].img.equals("floor-1")) {
                   new Thrower("down-explosion", Const.indexExplosion, Const.RATE_FIRE_UPDATE, l+1, c, this).start();
                   checkIfExplosionKilledSomeone(l+1, c);
                }
-               else if (game.map[l+1][c].img.contains("block"))
+               else if (client.map[l+1][c].img.contains("block"))
                   new Thrower("block-on-fire", Const.indexBlockOnFire, Const.RATE_BLOCK_UPDATE, l+1, c, this).start();
 
                //a direita
-               if (game.map[l][c+1].img.equals("floor-1")) {
+               if (client.map[l][c+1].img.equals("floor-1")) {
                   new Thrower("right-explosion", Const.indexExplosion, Const.RATE_FIRE_UPDATE, l, c+1, this).start();
                   checkIfExplosionKilledSomeone(l, c+1);
                }
-               else if (game.map[l][c+1].img.contains("block"))
+               else if (client.map[l][c+1].img.contains("block"))
                   new Thrower("block-on-fire", Const.indexBlockOnFire, Const.RATE_BLOCK_UPDATE, l, c+1, this).start();
 
                //acima
-               if (game.map[l-1][c].img.equals("floor-1")) {
+               if (client.map[l-1][c].img.equals("floor-1")) {
                   new Thrower("up-explosion", Const.indexExplosion, Const.RATE_FIRE_UPDATE, l-1, c, this).start();
                   checkIfExplosionKilledSomeone(l-1, c);
                }
-               else if (game.map[l-1][c].img.contains("block"))
+               else if (client.map[l-1][c].img.contains("block"))
                   new Thrower("block-on-fire", Const.indexBlockOnFire, Const.RATE_BLOCK_UPDATE, l-1, c, this).start();
 
                //a esquerda
-               if (game.map[l][c-1].img.equals("floor-1")) {
+               if (client.map[l][c-1].img.equals("floor-1")) {
                   new Thrower("left-explosion", Const.indexExplosion, Const.RATE_FIRE_UPDATE, l, c-1, this).start();
                   checkIfExplosionKilledSomeone(l, c-1);
                }
-               else if (game.map[l][c-1].img.contains("block"))
+               else if (client.map[l][c-1].img.contains("block"))
                   new Thrower("block-on-fire", Const.indexBlockOnFire, Const.RATE_BLOCK_UPDATE, l, c-1, this).start();
 
-               player.numberOfBombs++; //libera bomba
+               client.getPlayer()[id].numberOfBombs++; //libera bomba
             } catch (RemoteException | InterruptedException e) {
-               throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
-
          }
          try {sleep(0);} catch (InterruptedException e) {}
       }
@@ -131,32 +132,33 @@ class Thrower extends Thread implements Serializable {
    String keyWord, index[];
    int l, c;
    int delay;
-   MapUpdatesThrower mapUpdatesThrower;
+   MapUpdatesThrower mt;
 
-   Thrower(String keyWord, String index[], int delay, int l, int c, MapUpdatesThrower mapUpdatesThrower) {
+   Thrower(String keyWord, String index[], int delay, int l, int c, MapUpdatesThrower mp) {
       this.keyWord = keyWord;
       this.index = index;
       this.delay = delay;
       this.l = l;
       this.c = c;
-      this.mapUpdatesThrower = mapUpdatesThrower;
+      this.mt = mp;
    }
 
    public void run() {
-      try{
-
-         for (String i : index) {
-            this.mapUpdatesThrower.changeMap(keyWord + "-" + i, l, c);
-            try {
-               sleep(delay);
-            } catch (InterruptedException e) {}
+      for (String i : index) {
+         try {
+            mt.changeMap(keyWord + "-" + i, l, c);
+         } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
          }
-         //situação pós-explosão
-         this.mapUpdatesThrower.changeMap("floor-1", l, c);
-
+         try {
+            sleep(delay);
+         } catch (InterruptedException e) {}
+      }
+      //situação pós-explosão
+      try {
+         mt.changeMap("floor-1", l, c);
       } catch (RemoteException | InterruptedException e) {
          throw new RuntimeException(e);
       }
-
    }
 }

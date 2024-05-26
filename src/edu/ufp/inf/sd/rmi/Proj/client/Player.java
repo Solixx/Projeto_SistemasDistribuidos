@@ -10,28 +10,19 @@ public class Player implements Serializable {
    String status, color;
    JPanel panel;
    boolean alive;
-   int id;
    Game game;
+   int id;
 
    StatusChanger sc;
 
-   Player(JPanel panel, int id, Game game) throws InterruptedException {
-//      this.x = user.getSpawn()[game.players.size()].x;
-//      this.y = user.getSpawn()[game.players.size()].y;
-      this.x = game.playerData[game.playerData.length-1].x;
-      this.y = game.playerData[game.playerData.length-1].y;
-      this.color = Sprite.personColors[game.players.size()];
+   Player(int id, JPanel panel, Client cliente, Game game) throws InterruptedException {
+      this.x = cliente.getSpawn()[id].x;
+      this.y = cliente.getSpawn()[id].y;
+      this.color = Sprite.personColors[id];
       this.panel = panel;
-      for (PlayerData pd: game.playerData) {
-         if(pd.userID == id){
-            this.alive = pd.alive;
-         }
-      }
-
-      Sprite.setMaxLoopStatus();
-
-      this.id = id;
+      this.alive = cliente.getAlive()[id];
       this.game = game;
+        this.id = cliente.getId();
 
       (sc = new StatusChanger(this, "wait")).start();
    }
@@ -39,34 +30,6 @@ public class Player implements Serializable {
    public void draw(Graphics g) {
       if (alive)
          g.drawImage(Sprite.ht.get(color + "/" + status), x, y, Const.WIDTH_SPRITE_PLAYER, Const.HEIGHT_SPRITE_PLAYER, null);
-   }
-
-   public int getId() {
-      return id;
-   }
-
-   public int getX() {
-      return x;
-   }
-
-   public void setX(int x) {
-      this.x = x;
-   }
-
-   public int getY() {
-      return y;
-   }
-
-   public void setY(int y) {
-      this.y = y;
-   }
-
-   public Game getGame() {
-      return game;
-   }
-
-   public void setGame(Game game) {
-      this.game = game;
    }
 }
 
@@ -91,12 +54,12 @@ class StatusChanger extends Thread implements Serializable {
          }
 
          try {
-            sleep(Const.RATE_PLAYER_STATUS_UPDATE);
+            Thread.sleep(Const.RATE_PLAYER_STATUS_UPDATE);
          } catch (InterruptedException e) {}
 
          if (p.status.equals("dead-4")) {
             p.alive = false;
-            if (this.p.getGame().players.contains(this.p))
+            if (p.game.getYou() == p)
                System.exit(1);
          }
       }

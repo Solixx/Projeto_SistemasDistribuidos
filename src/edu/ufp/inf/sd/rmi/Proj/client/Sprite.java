@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
-public class Sprite {
+public class Sprite implements Serializable {
    final static String personColors[] = {
       "white", 
       "black", 
@@ -61,16 +61,14 @@ public class Sprite {
    }
 
    static void loadImages() {
-      String manuelPath[] = {"C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/map/basic/", "C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/person/"};
-
       try {
          System.out.print("Carregando imagens...");
          for (String keyWord : mapKeyWords)
-            ht.put(keyWord, ImageIO.read(new File(manuelPath[0]+keyWord+".png")));
+            ht.put(keyWord, ImageIO.read(new File("C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/map/basic/"+keyWord+".png")));
 
          for (String color : personColors)
             for (String keyWord : personKeyWords)
-               ht.put(color+"/"+keyWord, ImageIO.read(new File(manuelPath[1]+color+"/"+keyWord+".png")));
+               ht.put(color+"/"+keyWord, ImageIO.read(new File("C:/Users/manue/Desktop/GitHub/Projeto_SistemasDistribuidos/images/person/"+color+"/"+keyWord+".png")));
       } catch (IOException e) {
          System.out.print(" erro!\n");
          System.exit(1);

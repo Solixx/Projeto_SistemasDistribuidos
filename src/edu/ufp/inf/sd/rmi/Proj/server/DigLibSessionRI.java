@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.Proj.server;
 
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
-import edu.ufp.inf.sd.rmi.Proj.client.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -10,19 +9,9 @@ import java.util.ArrayList;
 
 public interface DigLibSessionRI extends Remote {
 
-    //Book [] Search(String title, String author) throws RemoteException; //TODO Search de Salas
-
     void logout() throws RemoteException;
 
-    boolean criarSala(int numPlayer) throws RemoteException;
-
-    boolean joinSala(int id) throws RemoteException, InterruptedException;
-
-    ArrayList<Game> listSalas() throws RemoteException;
-
-    Game select(int id)  throws RemoteException;
-
-    public User serachUser(String name, String pwd) throws RemoteException;
+    ArrayList<Sala> listSalas() throws RemoteException;
 
     User getUser() throws RemoteException;
 
@@ -30,12 +19,7 @@ public interface DigLibSessionRI extends Remote {
 
     DigLibFactoryimpl getDigLibFactoryimpl() throws RemoteException;
 
-    void insertSalaDB(Game game) throws RemoteException;
-    void updateSalaDB(Game game) throws RemoteException;
+    void createSala(int maxPlayers, ObserverRI observerRI) throws RemoteException, InterruptedException;
 
-    SubjectRI createSubjectRI(ObserverRI observer) throws RemoteException;
-
-    void updateSubjectRIGame(int id, ObserverRI observer, User user) throws RemoteException;
-
-    Game serachGame(int id) throws RemoteException;
+    void joinSala(int id, ObserverRI observerRI) throws RemoteException, InterruptedException;
 }

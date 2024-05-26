@@ -1,6 +1,5 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
-import edu.ufp.inf.sd.rmi.Proj.client.User;
 import edu.ufp.inf.sd.rmi.Proj.client.Game;
 
 import java.io.Serializable;
@@ -15,14 +14,14 @@ import java.util.ArrayList;
  */
 public class DBMockup implements Serializable {
 
-    private final ArrayList<Game> games;// = new ArrayList(); //TODO Mudar para Salas
+    private final ArrayList<Sala> salas;// = new ArrayList(); //TODO Mudar para Salas
     private final ArrayList<User> users;// = new ArrayList();
 
     /**
      * This constructor creates and inits the database with some books and users.
      */
     public DBMockup() {
-        games = new ArrayList<>();
+        salas = new ArrayList<>();
         users = new ArrayList<>();
         //Add 3 books
         //sala.add(new Book("Distributed Systems: principles and paradigms", "Tanenbaum"));
@@ -74,37 +73,37 @@ public class DBMockup implements Serializable {
     /**
      * Inserts a new sala into the DigLib.
      */
-      public void insertSala(Game sala) {
-          games.add(sala);
+      public void insertSala(Sala sala) {
+          salas.add(sala);
       }
 
-      public void updateSala(Game sala){
-          for(int i = 0; i < games.size(); i++){
-              Game g = games.get(i);
+      public void updateSala(Sala sala){
+          for(int i = 0; i < salas.size(); i++){
+              Sala g = salas.get(i);
               if(g.getId() == sala.getId()){
-                  games.set(i, sala);
+                  salas.set(i, sala);
                   return;
               }
           }
       }
 
-      public ArrayList<Game> listSalas(){
-          for (Game sala : games) {
-              System.out.println("Sala: " + sala.getId() + " MaxPlayers: " + sala.maxPlayers + "CurrentPlayers: " + sala.users.size());
+      public ArrayList<Sala> listSalas(){
+          for (Sala sala : salas) {
+              System.out.println("Sala: " + sala.getId() + " MaxPlayers: " + sala.getMaxPlayers() + "CurrentPlayers: " + sala.getUsers().size());
           }
 
-          return games;
+          return salas;
       }
 
     /**
      * Looks up for books with given title and author keywords.
      * TODO Mudar para Salas
      */
-    public Game select(int id) {
-        Game[] abooks = null;
+    public Sala select(int id) {
+        Sala[] abooks = null;
         // Find books that match
-        for (int i = 0; i < games.size(); i++) {
-            Game sala = (Game) games.get(i);
+        for (int i = 0; i < salas.size(); i++) {
+            Sala sala = salas.get(i);
             //System.out.println("DB - select(): book[" + i + "] = " + book.getTitle() + ", " + book.getAuthor());
             if (sala.getId() == id) {
                 //System.out.println("DB - select(): add book[" + i + "] = " + sala.getTitle() + ", " + sala.getAuthor());
@@ -115,8 +114,8 @@ public class DBMockup implements Serializable {
         return null;
     }
 
-    public ArrayList<Game> getGames() {
-        return games;
+    public ArrayList<Sala> getSalas() {
+        return salas;
     }
 
     public ArrayList<User> getUsers() {

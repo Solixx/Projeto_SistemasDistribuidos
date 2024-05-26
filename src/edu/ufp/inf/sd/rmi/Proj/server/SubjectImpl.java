@@ -1,16 +1,19 @@
 package edu.ufp.inf.sd.rmi.Proj.server;
 
+import edu.ufp.inf.sd.rmi.Proj.client.Client;
 import edu.ufp.inf.sd.rmi.Proj.client.ObserverRI;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
+public class SubjectImpl extends UnicastRemoteObject implements SubjectRI, Serializable {
 
     private State subjectState;
     private final ArrayList<ObserverRI> observers = new ArrayList<>();
     private DBMockup dbMockup;
+    private ArrayList<Client> clients = new ArrayList<>();;
 
     protected SubjectImpl() throws RemoteException {
         super();
@@ -57,9 +60,31 @@ public class SubjectImpl extends UnicastRemoteObject implements SubjectRI {
         this.dbMockup = dbMockup;
     }
 
+    @Override
+    public ArrayList<Client> getClients() throws RemoteException {
+        return this.clients;
+    }
+
+    @Override
+    public void setClients(ArrayList<Client> clients) throws RemoteException {
+        this.clients = clients;
+    }
+
+    @Override
+    public void attachClient(Client client) throws RemoteException {
+        this.clients.add(client);
+    }
+
+    @Override
+    public void detachClient(Client client) throws RemoteException {
+        this.clients.remove(client);
+    }
+
     public void notifyAllObservers() throws RemoteException, InterruptedException {
         for (ObserverRI obs: this.observers) {
             obs.update();
         }
     }
+
+
 }
