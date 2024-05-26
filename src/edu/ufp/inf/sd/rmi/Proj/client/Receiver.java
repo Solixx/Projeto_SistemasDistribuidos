@@ -9,27 +9,39 @@ public class Receiver extends Thread implements Serializable {
    Client client;
    
    Player fromWhichPlayerIs(int id) {
-      for (int i = 0; i < game.getClientes().size(); i++){
-         Client c = game.getClientes().get(i);
-         if (c.getId() == id)
-            return game.getYou();
-         else if(c.getId() == game.getEnemy1().id)
-            return game.getEnemy1();
-         if(game.getClientes().size() == 3){
-            if(c.getId() == game.getEnemy2().id)
+      System.out.println("fromWhichPlayerIs: " + id);
+      System.out.println("You: " + game.getYou().id);
+      System.out.println("Enemy1: " + game.getEnemy1().id);
+      System.out.println("Enemy2: " + game.getEnemy2().id);
+      System.out.println("Enemy3: " + game.getEnemy3().id);
+      if(game.getYou().id == id) {
+         System.out.println("escolheu YOU");
+         return game.getYou();
+      }
+      else if(game.getEnemy1().id == id) {
+            System.out.println("escolheu Enemy1");
+         return game.getEnemy1();
+      }
+      if(game.getClientes().size() > 2){
+            if(game.getEnemy2().id == id) {
                return game.getEnemy2();
-            if(game.getClientes().size() == 4){
-               if(c.getId() == game.getEnemy3().id)
-                  return game.getEnemy3();
             }
-         }
+            if(game.getClientes().size() > 3){
+                if(game.getEnemy3().id == id) {
+                   return game.getEnemy3();
+                }
+            }
       }
       return null;
    }
 
    public void run(String msg) {
+      System.out.println("Receiver: " + msg);
       String[] str = msg.split(" ");
+      System.out.println("Sout[0]: " + str[0]);
 
+      System.out.println("isNumeric: " + isNumeric(str[0]));
+      //if(!isNumeric(str[0]))   return;
       this.p = fromWhichPlayerIs(Integer.parseInt(str[0]));
 
       switch (str[1]) {
@@ -58,4 +70,18 @@ public class Receiver extends Thread implements Serializable {
         this.game = game;
         this.client = client;
     }
+
+   public static boolean isNumeric(String str) {
+      if (str == null || str.isEmpty()) {
+         return false;
+      }
+      try {
+         if(Integer.parseInt(str) >= 0){
+            return true;
+         }
+         return false;
+      } catch (NumberFormatException e) {
+         return false;
+      }
+   }
 }

@@ -30,6 +30,9 @@ public class Sender extends KeyAdapter implements Serializable {
       up = right = left = down = false;
       bombPlanted = false;
 
+      (ct = new CoordinatesThrower(this.id, client)).start();
+      (mt = new MapUpdatesThrower(this.id, client)).start();
+
       initClientmanager();
 
       System.out.println("Sender");
@@ -77,39 +80,36 @@ public class Sender extends KeyAdapter implements Serializable {
    }
 
    public void initClientmanager() throws RemoteException, InterruptedException {
-      (ct = new CoordinatesThrower(this.id, client)).start();
-      (mt = new MapUpdatesThrower(this.id, client)).start();
-
       client.getPlayer()[id].logged = true;
       client.getPlayer()[id].alive = true;
-      sendInitialSettings();
+      //sendInitialSettings();
 
       for (ObserverRI obs: subjectRI.getObservers())
          if (obs.getId() != this.client.getObserverRI().getId())
             obs.getSubjectRI().setState(new State(id, id + " playerJoined"));
    }
 
-   void sendInitialSettings() throws RemoteException, InterruptedException {
-      StringBuilder msg = new StringBuilder();
-      msg.append(id);
-      //out.print(id);
-      for (int i = 0; i < Const.LIN; i++)
-         for (int j = 0; j < Const.COL; j++)
-            //out.print(" " + Server.map[i][j].img);
-            msg.append(" ").append(client.getMap()[i][j].img);
-
-      for (int i = 0; i < Const.QTY_PLAYERS; i++)
-         //out.print(" " + Server.player[i].alive);
-         msg.append(" ").append(client.getPlayer()[i].alive);
-
-      for (int i = 0; i < Const.QTY_PLAYERS; i++)
-         //out.print(" " + Server.player[i].x + " " + Server.player[i].y);
-         msg.append(" ").append(client.getPlayer()[i].x).append(" ").append(client.getPlayer()[i].y);
-      //out.print("\n");
-      msg.append("\n");
-
-      subjectRI.setState(new State(0, msg.toString()));
-   }
+//   void sendInitialSettings() throws RemoteException, InterruptedException {
+//      StringBuilder msg = new StringBuilder();
+//      msg.append(id);
+//      //out.print(id);
+//      for (int i = 0; i < Const.LIN; i++)
+//         for (int j = 0; j < Const.COL; j++)
+//            //out.print(" " + Server.map[i][j].img);
+//            msg.append(" ").append(client.getMap()[i][j].img);
+//
+//      for (int i = 0; i < Const.QTY_PLAYERS; i++)
+//         //out.print(" " + Server.player[i].alive);
+//         msg.append(" ").append(client.getPlayer()[i].alive);
+//
+//      for (int i = 0; i < Const.QTY_PLAYERS; i++)
+//         //out.print(" " + Server.player[i].x + " " + Server.player[i].y);
+//         msg.append(" ").append(client.getPlayer()[i].x).append(" ").append(client.getPlayer()[i].y);
+//      //out.print("\n");
+//      msg.append("\n");
+//
+//      subjectRI.setState(new State(0, msg.toString()));
+//   }
 
    public void clientManager(String msg) throws RemoteException, InterruptedException {
       String[] str = msg.split(" ");

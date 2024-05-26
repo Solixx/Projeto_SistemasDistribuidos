@@ -46,7 +46,7 @@ public class ObserverImpl  extends UnicastRemoteObject implements ObserverRI, Se
 
         if(msg[1].equals("GameStart")){
             System.out.println("GameStart ObserverImpl: " + this.id);
-            this.client = new Client(this.id, this.subjectRI, this);
+            this.client = new Client(this.subjectRI.getClients().size(), this.subjectRI, this);
         } else{
             this.client.getReceiver().run(this.lastObserverState.getMsg());
         }

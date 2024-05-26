@@ -22,7 +22,7 @@ public class Player implements Serializable {
       this.panel = panel;
       this.alive = cliente.getAlive()[id];
       this.game = game;
-        this.id = cliente.getId();
+      this.id = id;
 
       (sc = new StatusChanger(this, "wait")).start();
    }

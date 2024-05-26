@@ -29,23 +29,42 @@ public class Game extends JPanel implements Serializable {
          System.out.print("Inicializando jogadores...");
 
          System.out.println("Clients size: " + clients.size());
-         for(int i = 0; i < clients.size(); i++){
-            Client c = clients.get(i);
-            Player p = new Player(c.getId()-1, this, c, this);
-            if(c.getId() == youClient.getId()){
-               you = p;
-               System.out.println("You Player game: " + you.id);
-            }else{
-               if(enemy1 == null){
-                  enemy1 = p;
-                  System.out.println("Enemy1 Player game: " + enemy1.id);
-               }else if(enemy2 == null){
-                  enemy2 = p;
-               }else if(enemy3 == null){
-                  enemy3 = p;
-               }
-            }
-         }
+
+         int id = youClient.getId();
+
+         System.out.println("YouClient id: " + id);
+         you = new Player(id%clients.size(), this, youClient, this);
+         System.out.println("You Player game: " + you.id);
+         enemy1 = new Player((id+1)%clients.size(), this, youClient, this);
+         System.out.println("Enemy1 Player game: " + enemy1.id);
+         enemy2 = new Player((id+2)%clients.size(), this, youClient, this);
+         enemy3 = new Player((id+3)%clients.size(), this, youClient, this);
+
+//         for(int i = 0; i < clients.size(); i++){
+//            Client c = clients.get(i);
+//            System.out.println("Client id: " + c.getId());
+//            Player p = new Player(id++%clients.size(), this, c, this);
+//            if(c.getId() == youClient.getId()){
+//               you = p;
+//               System.out.println("You Player game: " + you.id);
+//            }else{
+//               if(enemy1 == null){
+//                  enemy1 = p;
+//                  System.out.println("Enemy1 Player game: " + enemy1.id);
+//               }else if(enemy2 == null){
+//                  enemy2 = p;
+//               }else if(enemy3 == null){
+//                  enemy3 = p;
+//               }
+//            }
+//         }
+//         if(enemy2 == null){
+//            System.out.println("You: " + you.id + " Enemy1: " + enemy1.id);
+//         } else if(enemy3 == null){
+//            System.out.println("You: " + you.id + " Enemy1: " + enemy1.id + " Enemy2: " + enemy2.id);
+//         } else{
+//            System.out.println("You: " + you.id + " Enemy1: " + enemy1.id + " Enemy2: " + enemy2.id + " Enemy3: " + enemy3.id);
+//         }
       } catch (InterruptedException e) {
          System.out.println(" erro: " + e + "\n");
          System.exit(1);

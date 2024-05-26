@@ -46,13 +46,14 @@ public class Client implements Serializable {
 
       System.out.print(" ok\n");
 
+      setMap();
+      setPlayerData();
+
       this.spawn[0] = new Coordinate(0, 0);
       this.spawn[1] = new Coordinate(0, Const.COL - 1);
       this.spawn[2] = new Coordinate(Const.LIN - 1, 0);
       this.spawn[3] = new Coordinate(Const.LIN - 1, Const.COL - 1);
 
-      setMap();
-      setPlayerData();
 
       this.id = id;
       
@@ -72,17 +73,17 @@ public class Client implements Serializable {
 
    void receiveInitialSettings() {
       //mapa
-//      for (int i = 0; i < Const.LIN; i++)
-//         for (int j = 0; j < Const.COL; j++)
-//            map[i][j] = new Coordinate(Const.SIZE_SPRITE_MAP * j, Const.SIZE_SPRITE_MAP * i, in.next());
+      for (int i = 0; i < Const.LIN; i++)
+         for (int j = 0; j < Const.COL; j++)
+            map[i][j] = new Coordinate(Const.SIZE_SPRITE_MAP * j, Const.SIZE_SPRITE_MAP * i, map[i][j].img);
 
       //situação (vivo ou morto) inicial de todos os jogadores
       for (int i = 0; i < player.length; i++)
          this.alive[i] = player[i].alive;
 
       //coordenadas inicias de todos os jogadores
-//      for (int i = 0; i < Const.QTY_PLAYERS; i++)
-//         this.spawn[i] = new Coordinate(in.nextInt(), in.nextInt());
+      for (int i = 0; i < Const.QTY_PLAYERS; i++)
+         spawn[i] = new Coordinate(player[i].x , player[i].y);
    }
 
    void setMap() {
@@ -218,7 +219,7 @@ class Window extends JFrame implements Serializable {
       client.setGame(game);
       client.setReceiver(new Receiver(game, client));
       add(game);
-      setTitle("bomberman");
+      setTitle("bomberman "+client.getId());
       pack();
       setVisible(true);
       setLocationRelativeTo(null);

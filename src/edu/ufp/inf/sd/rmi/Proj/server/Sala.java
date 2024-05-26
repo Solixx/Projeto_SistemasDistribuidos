@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Sala implements Serializable {
-    static int currID = 1;
+    static int currID = 0;
     private int id;
     private SubjectRI subjectRI;
     private ArrayList<User> users = new ArrayList<>();

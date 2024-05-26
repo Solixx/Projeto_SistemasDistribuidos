@@ -30,11 +30,12 @@ class CoordinatesThrower extends Thread implements Serializable {
             else if (down)    newY = client.getPlayer()[id].y + Const.RESIZE;
             else if (right)   newX = client.getPlayer()[id].x + Const.RESIZE;
             else if (left)    newX = client.getPlayer()[id].x - Const.RESIZE;
-
+            //System.out.println("CT: newX: " + newX + " newY: " + newY);
             try {
                if (coordinateIsValid(newX, newY)) {
                   try {
                      subjectRI.setState(new edu.ufp.inf.sd.rmi.Proj.server.State(client.getId(), id + " newCoordinate " + newX + " " + newY));
+                     //System.out.println("CT: " + id + " newCoordinate " + newX + " " + newY);
                   } catch (RemoteException e) {
                      throw new RuntimeException(e);
                   } catch (InterruptedException e) {

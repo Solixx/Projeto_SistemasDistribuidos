@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  */
 public class User implements Serializable {
 
-    static int currId = 1;
+    static int currId = 0;
     private int id;
     private String uname;
     private String pword;
