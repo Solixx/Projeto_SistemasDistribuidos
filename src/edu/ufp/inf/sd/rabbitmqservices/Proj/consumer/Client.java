@@ -21,7 +21,7 @@ class PlayerData implements Serializable {
       this.x = x;
       this.y = y;
       this.logged = false;
-      this.alive = true;
+      this.alive = false;
       this.numberOfBombs = 1; // para 2 bombas, é preciso tratar cada bomba em uma thread diferente
    }
 }
@@ -42,10 +42,6 @@ public class Client implements Serializable {
 
    private Channel channelToRabbitMq;
    private String exchangeName;
-   private BuiltinExchangeType exchangeType;
-   private String exchangeBindingKeys;
-   private String messageFormat;
-   private HashMap<String, Integer> waitingList = new HashMap<>();
    public String nameQueue;
 
    Client(String args[]) {
@@ -65,7 +61,13 @@ public class Client implements Serializable {
       
       receiveInitialSettings();
 
-      startQueue(args);
+      RabbitUtils.printArgs(args);
+
+      String host=args[0];
+      int port=Integer.parseInt(args[1]);
+      exchangeName=args[2];
+
+      startQueue(host, port, "guest", "guest");
 
       Runnable r = () -> {
          try {
@@ -152,50 +154,36 @@ public class Client implements Serializable {
       );
    }
 
-   public void startQueue(String args[]) {
+   public void startQueue(String host, int port, String username, String passwrd) {
       try {
-         RabbitUtils.printArgs(args);
-
-         String host=args[0];
-         int port=Integer.parseInt(args[1]);
-         exchangeName=args[2];
-         System.out.println("exchangeName: " + exchangeName);
-
-         // Open a connection and a channel to rabbitmq broker/server
-         Connection connection=RabbitUtils.newConnection2Server(host, port, "guest", "guest");
+         Connection connection=RabbitUtils.newConnection2Server(host, port, username, passwrd);
          channelToRabbitMq=RabbitUtils.createChannel2Server(connection);
 
-         //Declare queue from which to consume (declare it also here, because consumer may start before publisher)
-         //channel.queueDeclare(queueName, false, false, false, null);
          channelToRabbitMq.exchangeDeclare(exchangeName, BuiltinExchangeType.TOPIC);
+         System.out.println(" [x] Declare exchange '" + exchangeName + "' of type" + BuiltinExchangeType.TOPIC);
 
          nameQueue = channelToRabbitMq.queueDeclare().getQueue();
-         System.out.println("\nQueueName: " + nameQueue);
+         System.out.println(" [x] Declare queue '" + nameQueue);
 
          String routingKey= "server.";
          channelToRabbitMq.queueBind(nameQueue,exchangeName,routingKey);
          System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-//DeliverCallback is a handler callback (lambda method) to consume messages pushed by the sender.
-         //Create a handler callback to receive messages from queue
          DeliverCallback deliverCallback=(consumerTag, delivery) -> {
             String message=new String(delivery.getBody(), "UTF-8");
-            String routingKey2 = delivery.getEnvelope().getRoutingKey();
+            String msgRoutingKey = delivery.getEnvelope().getRoutingKey();
             System.out.println(" [x] Received message: '" + message + "'");
             // Check the routing key
-            if (routingKey2.equals("client.")) {
-               // Ignore the message
+            if (msgRoutingKey.equals("client.")) {
                System.out.println(" [x] Ignoring message with routing key 'client.'");
-            } else if (routingKey2.equals("server.")) {
+            } else if (msgRoutingKey.equals("server.")) {
                receiver.run(message);
             }else {
                System.out.println(" [x] Received '" + message + "'");
-               // Republish the message with routing key "server
             }
          };
          CancelCallback callback=(consumerTag) ->{
             System.out.println(" [x] Consumer Tag ['" + consumerTag + "] - Cancel callback invoked!'");
          };
-
          channelToRabbitMq.basicConsume(nameQueue, true, deliverCallback, callback);
 
       } catch (Exception e) {
