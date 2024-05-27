@@ -84,7 +84,7 @@ public class RMIClient {
             menuSalas(thisSession);
 
 
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Client Start");
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Client Start");
 
 
         } catch (Exception ex) {
@@ -160,7 +160,7 @@ public class RMIClient {
 
                 ArrayList<Sala> s = thisSession.listSalas();
 
-//                for (Game sala : s) {
+//                for (edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Game sala : s) {
 //                    System.out.println("salaClient: " + sala.getId() + " MaxPlayers: " + sala.maxPlayers + "CurrentPlayers: " + sala.users.size());
 //                }
 

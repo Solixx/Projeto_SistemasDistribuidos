@@ -6,7 +6,7 @@
    - `cd src`
    - Compile: `javac *.java`
    - Inicie o servidor: `java Server`
-   - Inicie o edu.ufp.inf.sd.rmi.Proj.client: `java Client`
+   - Inicie o edu.ufp.inf.sd.rmi.Proj.client: `java edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Client`
 
 # Introdução
 
@@ -26,4 +26,4 @@ Através de um mapa exibido por uma interface gráfica, o jogador fará seus m
 
 Autor: [Bruno Papa](https://github.com/brnpapa)
 
-Sprites ripped by Zanaku, Game tilesets ripped by Plasma Captain.
+Sprites ripped by Zanaku, edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Game tilesets ripped by Plasma Captain.

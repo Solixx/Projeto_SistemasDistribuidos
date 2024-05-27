@@ -1,4 +1,4 @@
-//package edu.ufp.inf.sd.rmi.Proj.client;
+package edu.ufp.inf.sd.rabbitmqservices.Proj.consumer;//package edu.ufp.inf.sd.rmi.Proj.client;
 //
 //import java.io.IOException;
 //import java.io.PrintStream;

@@ -1,9 +1,11 @@
-package edu.ufp.inf.sd.rmi.Proj.client;
+package edu.ufp.inf.sd.rabbitmqservices.Proj.consumer;
 
 import edu.ufp.inf.sd.rmi.Proj.server.State;
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
 
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
@@ -22,8 +24,7 @@ public class Sender extends KeyAdapter implements Serializable {
    MapUpdatesThrower mt;
 
 
-   public Sender(SubjectRI subjectRI, Client client) throws RemoteException, InterruptedException {
-      this.subjectRI = subjectRI;
+   public Sender(Client client) throws IOException, InterruptedException {
       this.client = client;
       this.game = client.getGame();
       this.id = client.getId();
@@ -42,9 +43,7 @@ public class Sender extends KeyAdapter implements Serializable {
       if (e.getKeyCode() == KeyEvent.VK_SPACE) {
          try {
             clientManager("pressedSpace " + game.getYou().x + " " + game.getYou().y);
-         } catch (RemoteException ex) {
-            throw new RuntimeException(ex);
-         } catch (InterruptedException ex) {
+         } catch (InterruptedException | IOException ex) {
             throw new RuntimeException(ex);
          }
       }
@@ -52,9 +51,7 @@ public class Sender extends KeyAdapter implements Serializable {
       else if (isNewKeyCode(e.getKeyCode())) {
          try {
             clientManager("keyCodePressed " + e.getKeyCode());
-         } catch (RemoteException ex) {
-            throw new RuntimeException(ex);
-         } catch (InterruptedException ex) {
+         } catch (InterruptedException | IOException ex) {
             throw new RuntimeException(ex);
          }
       }
@@ -65,9 +62,7 @@ public class Sender extends KeyAdapter implements Serializable {
       //edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Client.out.println("keyCodeReleased " + e.getKeyCode());
       try {
          clientManager("keyCodeReleased " + e.getKeyCode());
-      } catch (RemoteException ex) {
-         throw new RuntimeException(ex);
-      } catch (InterruptedException ex) {
+      } catch (InterruptedException | IOException ex) {
          throw new RuntimeException(ex);
       }
       lastKeyCodePressed = -1; //a próxima tecla sempre será nova
@@ -79,14 +74,12 @@ public class Sender extends KeyAdapter implements Serializable {
       return ok;
    }
 
-   public void initClientmanager() throws RemoteException, InterruptedException {
+   public void initClientmanager() throws IOException, InterruptedException {
       client.getPlayer()[id].logged = true;
       client.getPlayer()[id].alive = true;
       //sendInitialSettings();
 
-      for (ObserverRI obs: subjectRI.getObservers())
-         if (obs.getId() != this.client.getObserverRI().getId())
-            obs.getSubjectRI().setState(new State(id, id + " playerJoined"));
+      client.sendMensage(id + " playerJoined", "client.");
    }
 
 //   void sendInitialSettings() throws RemoteException, InterruptedException {
@@ -111,7 +104,7 @@ public class Sender extends KeyAdapter implements Serializable {
 //      subjectRI.setState(new State(0, msg.toString()));
 //   }
 
-   public void clientManager(String msg) throws RemoteException, InterruptedException {
+   public void clientManager(String msg) throws IOException, InterruptedException {
       String[] str = msg.split(" ");
 
       if (str[0].equals("keyCodePressed") && client.getPlayer()[id].alive) {

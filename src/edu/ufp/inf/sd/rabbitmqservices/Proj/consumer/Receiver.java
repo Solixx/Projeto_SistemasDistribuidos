@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.Proj.client;
+package edu.ufp.inf.sd.rabbitmqservices.Proj.consumer;
 
 import java.io.Serializable;
 
@@ -22,17 +22,12 @@ public class Receiver extends Thread implements Serializable {
             System.out.println("escolheu Enemy1");
          return game.getEnemy1();
       }
-      if(game.getClientes().size() > 2){
-            if(game.getEnemy2().id == id) {
-               return game.getEnemy2();
-            }
-            if(game.getClientes().size() > 3){
-                if(game.getEnemy3().id == id) {
-                   return game.getEnemy3();
-                }
-            }
+      else if(game.getEnemy2().id == id) {
+         return game.getEnemy2();
       }
-      return null;
+      else{
+         return game.getEnemy3();
+      }
    }
 
    public void run(String msg) {

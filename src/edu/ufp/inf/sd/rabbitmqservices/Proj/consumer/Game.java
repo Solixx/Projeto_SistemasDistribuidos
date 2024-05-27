@@ -1,44 +1,31 @@
-package edu.ufp.inf.sd.rmi.Proj.client;
+package edu.ufp.inf.sd.rabbitmqservices.Proj.consumer;
 
 import edu.ufp.inf.sd.rmi.Proj.server.SubjectRI;
-import edu.ufp.inf.sd.rmi.Proj.server.User;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
-
 public class Game extends JPanel implements Serializable {
    private static final long serialVersionUID = 1L;
    private Player you, enemy1, enemy2, enemy3;
-    private ArrayList<Client> clients;
-    private SubjectRI subjectRI;
     private Client youClient;
 
-   Game(int width, int height, SubjectRI subjectRI, Client youClient) throws RemoteException {
-      this.subjectRI = subjectRI;
-      this.clients = subjectRI.getClients();
+   Game(int width, int height, Client youClient) throws RemoteException {
       this.youClient = youClient;
 
       setPreferredSize(new Dimension(width, height));
       try {
          System.out.print("Inicializando jogadores...");
 
-         System.out.println("Clients size: " + clients.size());
-
          int id = youClient.getId();
 
-         System.out.println("YouClient id: " + id);
-         you = new Player(id%clients.size(), this, youClient, this);
-         System.out.println("You edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Player game: " + you.id);
-         enemy1 = new Player((id+1)%clients.size(), this, youClient, this);
-         System.out.println("Enemy1 edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Player game: " + enemy1.id);
-         enemy2 = new Player((id+2)%clients.size(), this, youClient, this);
-         enemy3 = new Player((id+3)%clients.size(), this, youClient, this);
+         you = new Player(id%Const.QTY_PLAYERS, this, youClient, this);
+         enemy1 = new Player((id+1)%Const.QTY_PLAYERS, this, youClient, this);
+         enemy2 = new Player((id+2)%Const.QTY_PLAYERS, this, youClient, this);
+         enemy3 = new Player((id+3)%Const.QTY_PLAYERS, this, youClient, this);
 
 //         for(int i = 0; i < clients.size(); i++){
 //            edu.ufp.inf.sd.rabbitmqservices.Proj.producer.Client c = clients.get(i);
@@ -71,7 +58,7 @@ public class Game extends JPanel implements Serializable {
       }
       System.out.print(" ok\n");
 
-      System.out.println("Meu jogador: " + Sprite.personColors[yourUserIndex(youClient.getId())]);
+      System.out.println("Meu jogador: " + Sprite.personColors[youClient.getId()]);
    }
 
    //desenha os componentes, chamada por paint() e repaint()
@@ -105,24 +92,6 @@ public class Game extends JPanel implements Serializable {
       youClient.map[l][c].img = keyWord;
    }
 
-   public Client findUser(int id){
-        for(Client c : clients){
-             if(c.getId() == id){
-                return c;
-             }
-        }
-        return null;
-   }
-
-   public int yourUserIndex(int id){
-      for(int i = 0; i < clients.size(); i++){
-         if(clients.get(i).getId() == id){
-            return i;
-         }
-      }
-      return -1;
-   }
-
    public Player getYou() {
       return you;
    }
@@ -153,22 +122,6 @@ public class Game extends JPanel implements Serializable {
 
    public void setEnemy3(Player enemy3) {
       this.enemy3 = enemy3;
-   }
-
-   public ArrayList<Client> getClientes() {
-      return clients;
-   }
-
-   public void setClientes(ArrayList<Client> clients) {
-      this.clients = clients;
-   }
-
-   public SubjectRI getSubjectRI() {
-      return subjectRI;
-   }
-
-   public void setSubjectRI(SubjectRI subjectRI) {
-      this.subjectRI = subjectRI;
    }
 
    public Client getYouClient() {
