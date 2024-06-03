@@ -35,8 +35,6 @@ public class Receiver extends Thread implements Serializable {
       String[] str = msg.split(" ");
       System.out.println("Sout[0]: " + str[0]);
 
-      System.out.println("isNumeric: " + isNumeric(str[0]));
-      //if(!isNumeric(str[0]))   return;
       this.p = fromWhichPlayerIs(Integer.parseInt(str[0]));
 
       switch (str[1]) {
@@ -65,18 +63,4 @@ public class Receiver extends Thread implements Serializable {
         this.game = game;
         this.client = client;
     }
-
-   public static boolean isNumeric(String str) {
-      if (str == null || str.isEmpty()) {
-         return false;
-      }
-      try {
-         if(Integer.parseInt(str) >= 0){
-            return true;
-         }
-         return false;
-      } catch (NumberFormatException e) {
-         return false;
-      }
-   }
 }
